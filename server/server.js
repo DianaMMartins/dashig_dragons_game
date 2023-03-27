@@ -12,6 +12,10 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log(socket.id, "connected");
+  socket.on('Hello', () => {
+    console.log('hello');
+    socket.emit('Bye');
+  })
   socket.on("disconnect", () => {
     console.log("disconnect");
   });

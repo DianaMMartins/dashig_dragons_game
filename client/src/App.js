@@ -8,6 +8,7 @@ function App() {
 
   useEffect(() => {
     function onConnect() {
+      socket.emit('Hello')
       console.log('connected');
       setIsConnected(true);
     }
@@ -29,6 +30,10 @@ function App() {
     socket.disconnect();
     console.log("disconnect", socket.connected);
   }
+
+  socket.on('Bye', ()=>{
+    console.log('bye');
+  })
 
   return (
     <div className="App">
