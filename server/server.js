@@ -10,21 +10,24 @@ const io = new Server(server, {
   },
 });
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-const Schema = mongoose.Schema;
+//define schema --> create model, (collectionName, Schema) --> use model to make queries, e.g find, save, etc.
+
+//Schemas
 const schemaForAll = new Schema({});
 
-//define schema --> create model, (collectionName, Schema) --> use model to make queries, e.g find, save, etc.
+//Models
 
 io.on("connection", (socket) => {
   console.log(socket.id, "connected");
-
-  socket.on("Hello", () => {
-    console.log("hello");
-    socket.emit("Bye");
-  });
+  socket.emit("Hello", "world");
+  // socket.on("Hello", () => {
+  //   console.log("hello");
+  //   socket.emit("Bye");
+  // });
   socket.on("disconnect", () => {
     console.log("disconnect");
   });
@@ -35,8 +38,10 @@ const db = mongoose
     "mongodb+srv://newuser:zaKUwAsSSChyUO3U@pinder.skvgszw.mongodb.net/sample_mflix"
   )
   .then(() => {
-    console.log("listening 4040");
+    // console.log("listening 4040");
     server.listen(4040);
   });
 
 // ?retryWrites=true&w=majority
+
+module.exports = { server, io };
