@@ -1,7 +1,6 @@
 import "./App.css";
 import { socket } from "./socket";
 import { useState, useEffect } from "react";
-// import { connect } from 'http2';
 import GameWindow from "./Components/GameWindow.jsx";
 
 function App() {
