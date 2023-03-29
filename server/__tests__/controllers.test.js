@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const {
   getEnemies,
   getTowers,
-  getGoals,
+  getGoal,
   getPlayer,
   getGameScore,
 } = require("../controllers/gameControllers");
@@ -103,13 +103,13 @@ describe("Testing we get towers from database ", () => {
 
 describe("Testing Goals", () => {
   test("should have length greater than 0", () => {
-    return getGoals().then((goal) => {
+    return getGoal().then((goal) => {
       expect(Array.isArray(goal)).toBe(true);
       expect(goal.length).toBeGreaterThan(0);
     });
   });
   test("should have expected properties and types", () => {
-    return getGoals().then((goals) => {
+    return getGoal().then((goals) => {
       expect(goals).toEqual(
         expect.arrayContaining([
           expect.objectContaining({

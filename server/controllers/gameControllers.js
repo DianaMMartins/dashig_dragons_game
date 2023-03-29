@@ -46,7 +46,7 @@ const getTowers = () => {
     .catch((error) => console.log(error));
 };
 
-const getGoals = () => {
+const getGoal = () => {
   return goalModel
     .find({})
     .then((apiResult) => {
@@ -68,7 +68,6 @@ const getGameScore = () => {
       if (apiResult.length === 0) return Promise.reject("No scores found");
 
       const convertedApiResult = convertToJson(apiResult);
-      console.log(apiResult);
       return convertedApiResult;
     })
     .catch((err) => {
@@ -76,4 +75,4 @@ const getGameScore = () => {
     });
 };
 
-module.exports = { getEnemies, getGoals, getTowers, getPlayer, getGameScore };
+module.exports = { getEnemies, getGoal, getTowers, getPlayer, getGameScore };
