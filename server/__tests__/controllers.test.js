@@ -32,24 +32,26 @@ describe('Testing Enemies', () => {
     })
 })
 
-describe.only('Testing Goal', () => {
+describe('Testing Goal', () => {
 
     test('should have length greater than 0', () => {
         return getGoal().then((goal) => {
-            expect (Array.isArray(goal)).toBe(true)
+            expect(Array.isArray(goal)).toBe(true)
             expect(goal.length).toBeGreaterThan(0)
         })
     })
 
-
-
-
     test('should have expected properties and types', () => {
         return getGoal().then((goals) => {
-            goals.forEach((goal) => {
-                expect(goal).toHaveProperty('_id', expect.any(Object))
-                expect(goal).toHaveProperty('health', expect.any(Number))
-            })
+            expect(goals).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        _id: expect.any(Object),
+                        health: expect.any(Number)
+                    })
+                ])
+            )
+
         })
     })
 

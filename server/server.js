@@ -13,8 +13,7 @@ const mongoose = require("mongoose");
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-const { getEnemies } = require('./controllers/gameControllers')
-const { getGoal } = require('./controllers/gameControllers')
+const { getEnemies, getGoal } = require('./controllers/gameControllers')
 
 
 io.on("connection", (socket) => {

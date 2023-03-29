@@ -21,6 +21,8 @@ const getGoal = () => {
         }
         const convertedApiResult = convertToJson(apiResult)
         return convertedApiResult
+    }).catch((error) => {
+        console.log(error)
     })
 }
 
