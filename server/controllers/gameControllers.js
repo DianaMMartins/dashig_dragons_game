@@ -4,6 +4,7 @@ const {
   goalModel,
   playerModel,
   scoresModel,
+  addPlayerScoreModel
 } = require("../models/gameModels");
 const { convertToJson } = require("../utils/utils");
 
@@ -68,6 +69,7 @@ const getGameScore = () => {
       if (apiResult.length === 0) return Promise.reject("No scores found");
 
       const convertedApiResult = convertToJson(apiResult);
+      console.log(convertedApiResult)
       return convertedApiResult;
     })
     .catch((err) => {
@@ -75,4 +77,15 @@ const getGameScore = () => {
     });
 };
 
-module.exports = { getEnemies, getGoal, getTowers, getPlayer, getGameScore };
+const postPlayerScore = (playerScoreObject) => {
+  console.log(playerScoreObject.name)
+  let object = { $push: { playerScoreObject } }
+
+  return scoresModel.create(playerScoreObject ).then((apiResult) => {
+
+    console.log('anything')
+    console.log('in controller ' + apiResult)
+  })
+}
+
+module.exports = { getEnemies, getGoal, getTowers, getPlayer, getGameScore, postPlayerScore };

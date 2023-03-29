@@ -19,12 +19,25 @@ const {
   getGoal,
   getPlayer,
   getGameScore,
+  postPlayerScore
 } = require("./controllers/gameControllers");
 
+const playerScore = {
+  name: 'Sarah',
+  score: 11
+}
+
+postPlayerScore(playerScore).then((data) => {
+
+  console.log(' in sever ' + data)
+})
+
 io.on("connection", (socket) => {
-  getEnemies().then((data) => {});
-  getTowers().then((data) => {});
-  getGoal().then((data) => {});
+  getEnemies().then((data) => { });
+  getTowers().then((data) => { });
+  getGoal().then((data) => { });
+
+
 
   console.log(socket.id, "connected");
   socket.emit("Hello", "world");
