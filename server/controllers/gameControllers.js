@@ -1,5 +1,6 @@
 
 const { enemiesModel } = require('../models/gameModels')
+const { goalModel } = require('../models/gameModels')
 
 const { convertToJson } = require('../utils/utils')
 
@@ -11,4 +12,18 @@ const getEnemies = () => {
     })
 }
 
-module.exports = { getEnemies }
+
+
+const getGoal = () => {
+    return goalModel.find({}).then((apiResult) => {
+        if (apiResult.length === 0) {
+            return Promise.reject('no goal found')
+        }
+        const convertedApiResult = convertToJson(apiResult)
+        return convertedApiResult
+    }).catch((error) => {
+        console.log(error)
+    })
+}
+
+module.exports = { getEnemies, getGoal }

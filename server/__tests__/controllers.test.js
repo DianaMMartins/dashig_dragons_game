@@ -1,6 +1,7 @@
 
 const mongoose = require("mongoose");
 const { getEnemies } = require('../controllers/gameControllers')
+const { getGoal } = require('../controllers/gameControllers')
 
 beforeEach(async () => {
     await mongoose.connect("mongodb+srv://newuser:zaKUwAsSSChyUO3U@pinder.skvgszw.mongodb.net/Game");
@@ -29,4 +30,29 @@ describe('Testing Enemies', () => {
             })
         })
     })
+})
+
+describe('Testing Goal', () => {
+
+    test('should have length greater than 0', () => {
+        return getGoal().then((goal) => {
+            expect(Array.isArray(goal)).toBe(true)
+            expect(goal.length).toBeGreaterThan(0)
+        })
+    })
+
+    test('should have expected properties and types', () => {
+        return getGoal().then((goals) => {
+            expect(goals).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        _id: expect.any(Object),
+                        health: expect.any(Number)
+                    })
+                ])
+            )
+
+        })
+    })
+
 })
