@@ -9,7 +9,6 @@ describe("Test suite for awesome socket stuff", () => {
   beforeAll((done) => {
     server.listen(() => {
       const port = server.address().port;
-      console.log(port);
       clientSocket = new Client(`http://localhost:${port}`);
 
       io.on("connection", (socket) => {
