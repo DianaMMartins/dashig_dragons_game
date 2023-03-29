@@ -3,7 +3,8 @@ const {
   getEnemies,
   getTowers,
   getGoals,
-  getPlayer
+  getPlayer,
+  getGameScore,
 } = require("../controllers/gameControllers");
 
 beforeEach(async () => {
@@ -23,7 +24,6 @@ describe("Testing Enemies", () => {
       expect(enemies.length).toBeGreaterThan(0);
     });
   });
-
   test("should have expected properties and types", () => {
     return getEnemies().then((enemies) => {
       expect(enemies).toEqual(
@@ -38,6 +38,39 @@ describe("Testing Enemies", () => {
           }),
         ])
       );
+    });
+  });
+});
+
+describe("Test suite for get scoreboard", () => {
+  test("Output should be an array", () => {
+    return getGameScore().then((data) => {
+      expect(Array.isArray(data)).toBe(true);
+    });
+  });
+  test("returned array is not empty", () => {
+    return getGameScore().then((data) => {
+      expect(data.length).toBeGreaterThan(0);
+    });
+  });
+  test("Each object is returned with correct properties and data types", () => {
+    return getGameScore().then((scores) => {
+      expect(scores).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            _id: expect.any(Object),
+            player: expect.any(Object),
+          }),
+        ])
+      );
+      scores.forEach((playerScore) => {
+        expect(playerScore.player).toEqual(
+          expect.objectContaining({
+            name: expect.any(String),
+            score: expect.any(Number),
+          })
+        );
+      });
     });
   });
 });
@@ -89,37 +122,36 @@ describe("Testing Goals", () => {
   });
 });
 
+describe("Testing Player", () => {
+  test("should have a length of 1", () => {
+    return getPlayer().then((data) => {
+      expect(data.length).toBeGreaterThan(0);
+    });
+  });
 
-describe('Testing Player',()=>{
-    test('should have a length of 1',()=>{
-        return getPlayer().then((data)=>{
-            expect(data.length).toBeGreaterThan(0)
-        })
-    })
-
-    test('should have expected properties and types',()=>{
-        return getPlayer().then((players)=>{
-          expect(players).toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                _id:expect.any(Object),
-                health:expect.any(Number),
-                coins:expect.any(Number),
-                weapon:expect.any(Array),
-              })
-              ])
-          )
-          players.forEach((player)=>{
-            expect(player.weapon).toEqual(
-              expect.arrayContaining([
-                expect.objectContaining({
-                  weaponName:expect.any(String),
-                  attackDamage:expect.any(Number),
-                  ammunition:expect.any(Number)
-                })
-              ])
-            )
-          })
-        })
-    })
-})
+  test("should have expected properties and types", () => {
+    return getPlayer().then((players) => {
+      expect(players).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            _id: expect.any(Object),
+            health: expect.any(Number),
+            coins: expect.any(Number),
+            weapon: expect.any(Array),
+          }),
+        ])
+      );
+      players.forEach((player) => {
+        expect(player.weapon).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              weaponName: expect.any(String),
+              attackDamage: expect.any(Number),
+              ammunition: expect.any(Number),
+            }),
+          ])
+        );
+      });
+    });
+  });
+});
