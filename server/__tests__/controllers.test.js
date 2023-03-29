@@ -3,6 +3,7 @@ const {
   getEnemies,
   getTowers,
   getGoals,
+  getPlayer
 } = require("../controllers/gameControllers");
 
 beforeEach(async () => {
@@ -87,3 +88,38 @@ describe("Testing Goals", () => {
     });
   });
 });
+
+
+describe('Testing Player',()=>{
+    test('should have a length of 1',()=>{
+        return getPlayer().then((data)=>{
+            expect(data.length).toBeGreaterThan(0)
+        })
+    })
+
+    test('should have expected properties and types',()=>{
+        return getPlayer().then((players)=>{
+          expect(players).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                _id:expect.any(Object),
+                health:expect.any(Number),
+                coins:expect.any(Number),
+                weapon:expect.any(Array),
+              })
+              ])
+          )
+          players.forEach((player)=>{
+            expect(player.weapon).toEqual(
+              expect.arrayContaining([
+                expect.objectContaining({
+                  weaponName:expect.any(String),
+                  attackDamage:expect.any(Number),
+                  ammunition:expect.any(Number)
+                })
+              ])
+            )
+          })
+        })
+    })
+})
