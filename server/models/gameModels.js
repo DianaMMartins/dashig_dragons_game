@@ -3,5 +3,7 @@ const { schemaForAll } = require('./schema')
 
 const enemiesModel = new mongoose.model('Enemies', schemaForAll)
 const playerModel = new mongoose.model('Players',schemaForAll)
+const towersModel = new mongoose.model('towers', schemaForAll)
+const goalModel = new mongoose.model('Goals', schemaForAll)
 
-module.exports = { enemiesModel,playerModel }
+module.exports = { enemiesModel, goalModel, towersModel,playerModel}
