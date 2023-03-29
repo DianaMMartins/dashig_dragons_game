@@ -46,20 +46,37 @@ describe("Testing we get towers from database ", () => {
   });
   test("should have expected properties for towers table and correct data types", () => {
     return getTowers().then((towers) => {
-        const actual = {
-            _id: expect.any(Object),
-          name: expect.any(String),
-          cost: expect.any(Number),
-          recharge: expect.any(Number),
-          attackDamage: expect.any(Number),
-          attackSpeed: expect.any(Number),
-          health: expect.any(Number),
-        }
-      towers.forEach((eachTower) => {
-        expect(eachTower).toMatchObject({
-          
-        });
+      const actual = towers.map((eachTower) => {
+        return eachTower;
       });
+      expect(actual).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            _id: expect.any(Object),
+            name: expect.any(String),
+            cost: expect.any(Number),
+            recharge: expect.any(Number),
+            attackDamage: expect.any(Number),
+            attackSpeed: expect.any(Number),
+            health: expect.any(Number),
+          }),
+        ])
+      );
     });
+    //   const object = [{
+    //       _id: expect.any(Object),
+    //     name: expect.any(String),
+    //     cost: expect.any(Number),
+    //     recharge: expect.any(Number),
+    //     attackDamage: expect.any(Number),
+    //     attackSpeed: expect.any(Number),
+    //     health: expect.any(Number),
+    //   }]
+    //   expect(actual).toEqual(
+    //     expect.arrayContaining([
+    //         expect.objectContaining(
+
+    //         )])
+    //   )
   });
 });
