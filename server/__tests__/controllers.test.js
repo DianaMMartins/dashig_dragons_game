@@ -17,7 +17,7 @@ afterEach(async () => {
 
 describe("Testing Enemies", () => {
   test("should be an array and have length greater than 0", () => {
-      return getEnemies().then((enemies) => {
+    return getEnemies().then((enemies) => {
       expect(Array.isArray(enemies)).toBe(true);
       expect(enemies.length).toBeGreaterThan(0);
     });
@@ -25,10 +25,7 @@ describe("Testing Enemies", () => {
 
   test("should have expected properties and types", () => {
     return getEnemies().then((enemies) => {
-      const actual = enemies.map((eachEnemy) => {
-        return eachEnemy;
-      });
-      expect(actual).toEqual(
+      expect(enemies).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             _id: expect.any(Object),
@@ -53,10 +50,7 @@ describe("Testing we get towers from database ", () => {
   });
   test("should have expected properties for towers table and correct data types", () => {
     return getTowers().then((towers) => {
-      const actual = towers.map((eachTower) => {
-        return eachTower;
-      });
-      expect(actual).toEqual(
+      expect(towers).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             _id: expect.any(Object),
