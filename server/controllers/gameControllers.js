@@ -11,4 +11,12 @@ const getEnemies = () => {
     })
 }
 
+const getTowers = () => {
+
+    return towerModel.find({}).then((apiResult) => {
+        const convertedApiResult = convertToJson(apiResult)
+        return convertedApiResult
+    })
+}
+
 module.exports = { getEnemies }
