@@ -11,11 +11,18 @@ const getEnemies = () => {
 };
 
 const getGameScore = () => {
-  return scoresModel.find({}).then((apiResult) => {
-    const convertedApiResult = convertToJson(apiResult);
-    console.log(apiResult);
-    return convertedApiResult;
-  });
+  return scoresModel
+    .find({})
+    .then((apiResult) => {
+      if (apiResult.length === 0) return Promise.reject("No scores found");
+
+      const convertedApiResult = convertToJson(apiResult);
+      console.log(apiResult);
+      return convertedApiResult;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 module.exports = { getEnemies, getGameScore };
