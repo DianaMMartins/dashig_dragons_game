@@ -20,5 +20,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@shelf/jest-mongodb": "^4.1.7"
+  },
+  "jest": {
+    "preset":"@shelf/jest-mongodb"
+  }
 }

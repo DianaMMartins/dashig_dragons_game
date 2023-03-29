@@ -10,23 +10,22 @@ const io = new Server(server, {
   },
 });
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+// const Schema = mongoose.Schema;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-//define schema --> create model, (collectionName, Schema) --> use model to make queries, e.g find, save, etc.
+const { getEnemies } = require('./controllers/gameControllers')
 
-//Schemas
-const schemaForAll = new Schema({});
-
-//Models
 
 io.on("connection", (socket) => {
+  getEnemies().then((data) => {
+  })
+
   console.log(socket.id, "connected");
   socket.emit("Hello", "world");
   // socket.on("Hello", () => {
   //   console.log("hello");
-  //   socket.emit("Bye");
+  //   socket.emit("Bye' ());
   // });
   socket.on("disconnect", () => {
     console.log("disconnect");
@@ -35,7 +34,7 @@ io.on("connection", (socket) => {
 
 const db = mongoose
   .connect(
-    "mongodb+srv://newuser:zaKUwAsSSChyUO3U@pinder.skvgszw.mongodb.net/sample_mflix"
+    "mongodb+srv://newuser:zaKUwAsSSChyUO3U@pinder.skvgszw.mongodb.net/Game"
   )
   .then(() => {
     // console.log("listening 4040");
@@ -44,4 +43,4 @@ const db = mongoose
 
 // ?retryWrites=true&w=majority
 
-module.exports = { server, io };
+module.exports = { server, io, app };
