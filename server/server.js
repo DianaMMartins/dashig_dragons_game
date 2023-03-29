@@ -16,13 +16,13 @@ app.use(express.json());
 const {
   getEnemies,
   getTowers,
-  getGoalss,
+  getGoals,
 } = require("./controllers/gameControllers");
 
 io.on("connection", (socket) => {
   getEnemies().then((data) => {});
   getTowers().then((data) => {});
-  getGoalss().then((data) => {});
+  getGoals().then((data) => {});
 
   console.log(socket.id, "connected");
   socket.emit("Hello", "world");
