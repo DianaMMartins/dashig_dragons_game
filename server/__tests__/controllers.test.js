@@ -44,7 +44,7 @@ describe('Testing Player',()=>{
                 expect(player).toHaveProperty('_id',expect.any(Object))
                 expect(player).toHaveProperty('health',expect.any(Number))
                 expect(player).toHaveProperty('coins',expect.any(Number))
-                expect(player).toHaveProperty('weapon',expect.any(Object))
+                expect(player).toHaveProperty('weapon',expect.any(Array))
                 player['weapon'].forEach(weapon => {
                     expect(weapon).toHaveProperty('weaponName',expect.any(String))
                     expect(weapon).toHaveProperty('attackDamage',expect.any(Number))
