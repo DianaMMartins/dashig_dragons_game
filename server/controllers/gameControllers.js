@@ -1,14 +1,21 @@
+const { enemiesModel, scoresModel } = require("../models/gameModels");
 
-const { enemiesModel } = require('../models/gameModels')
-
-const { convertToJson } = require('../utils/utils')
+const { convertToJson } = require("../utils/utils");
 
 const getEnemies = () => {
+  return enemiesModel.find({}).then((apiResult) => {
+    const convertedApiResult = convertToJson(apiResult);
+    console.log(apiResult);
+    return convertedApiResult;
+  });
+};
 
-    return enemiesModel.find({}).then((apiResult) => {
-        const convertedApiResult = convertToJson(apiResult)
-        return convertedApiResult
-    })
-}
+const getGameScore = () => {
+  return scoresModel.find({}).then((apiResult) => {
+    const convertedApiResult = convertToJson(apiResult);
+    console.log(apiResult);
+    return convertedApiResult;
+  });
+};
 
-module.exports = { getEnemies }
+module.exports = { getEnemies, getGameScore };
