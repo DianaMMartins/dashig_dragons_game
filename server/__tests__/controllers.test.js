@@ -17,9 +17,9 @@ afterEach(async () => {
 
 describe("Testing Enemies", () => {
   test("should be an array and have length greater than 0", () => {
-    return getEnemies().then((data) => {
-      expect(Array.isArray(data)).toBe(true);
-      expect(data.length).toBeGreaterThan(0);
+      return getEnemies().then((enemies) => {
+      expect(Array.isArray(enemies)).toBe(true);
+      expect(enemies.length).toBeGreaterThan(0);
     });
   });
 
