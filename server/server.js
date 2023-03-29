@@ -13,10 +13,23 @@ const mongoose = require("mongoose");
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
+<<<<<<< HEAD
 const { getEnemies } = require("./controllers/gameControllers");
 
 io.on("connection", (socket) => {
   getEnemies().then((data) => {});
+=======
+const {
+  getEnemies,
+  getTowers,
+  getGoals,
+} = require("./controllers/gameControllers");
+
+io.on("connection", (socket) => {
+  getEnemies().then((data) => {});
+  getTowers().then((data) => {});
+  getGoals().then((data) => {});
+>>>>>>> 7e5cd89aa09eabe5859a8b0e56bb7875af7f435f
 
   console.log(socket.id, "connected");
   socket.emit("Hello", "world");
