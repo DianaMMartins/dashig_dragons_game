@@ -25,14 +25,21 @@ describe("Testing Enemies", () => {
 
   test("should have expected properties and types", () => {
     return getEnemies().then((enemies) => {
-      enemies.forEach((enemy) => {
-        expect(enemy).toHaveProperty("_id", expect.any(Object));
-        expect(enemy).toHaveProperty("attackDamage", expect.any(Number));
-        expect(enemy).toHaveProperty("coinsOnKill", expect.any(Number));
-        expect(enemy).toHaveProperty("health", expect.any(Number));
-        expect(enemy).toHaveProperty("level", expect.any(Number));
-        expect(enemy).toHaveProperty("walkSpeed", expect.any(Number));
+      const actual = enemies.map((eachEnemy) => {
+        return eachEnemy;
       });
+      expect(actual).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            _id: expect.any(Object),
+            attackDamage: expect.any(Number),
+            coinsOnKill: expect.any(Number),
+            health: expect.any(Number),
+            level: expect.any(Number),
+            walkSpeed: expect.any(Number),
+          }),
+        ])
+      );
     });
   });
 });
@@ -63,20 +70,5 @@ describe("Testing we get towers from database ", () => {
         ])
       );
     });
-    //   const object = [{
-    //       _id: expect.any(Object),
-    //     name: expect.any(String),
-    //     cost: expect.any(Number),
-    //     recharge: expect.any(Number),
-    //     attackDamage: expect.any(Number),
-    //     attackSpeed: expect.any(Number),
-    //     health: expect.any(Number),
-    //   }]
-    //   expect(actual).toEqual(
-    //     expect.arrayContaining([
-    //         expect.objectContaining(
-
-    //         )])
-    //   )
   });
 });
