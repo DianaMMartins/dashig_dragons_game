@@ -5,6 +5,8 @@ const {
   getGoal,
   getPlayer,
   getGameScore,
+  postPlayerScore
+
 } = require("../controllers/gameControllers");
 
 beforeEach(async () => {
@@ -59,18 +61,11 @@ describe("Test suite for get scoreboard", () => {
         expect.arrayContaining([
           expect.objectContaining({
             _id: expect.any(Object),
-            player: expect.any(Object),
+            name: expect.any(String),
+            score: expect.any(Number),
           }),
         ])
       );
-      scores.forEach((playerScore) => {
-        expect(playerScore.player).toEqual(
-          expect.objectContaining({
-            name: expect.any(String),
-            score: expect.any(Number),
-          })
-        );
-      });
     });
   });
 });
@@ -155,3 +150,63 @@ describe("Testing Player", () => {
     });
   });
 });
+
+describe("Testing Post/Scores", () => {
+
+  //should return expected error string 
+  //should ignore uneeded properties
+
+  test('should return correct data and type from user', () => {
+    const actual = {
+      name: 'Lia',
+      score: 2
+    }
+    return postPlayerScore(actual).then((response) => {
+      expect(response).toEqual(
+        expect.objectContaining({
+          _id: expect.any(Object),
+          name: expect.any(String),
+          score: expect.any(Number)
+        })
+      )
+    })
+  })
+
+  //look into error handling(maybe update mongodb to have properties as required, then update test to check if its empty ot not)
+  // test('should return expected error string', () => {
+
+  //   const actual = {
+  //     date: 'newly created at 4:53pm!!',
+  //     time: 5
+  //   }
+  //   const notValid = ['hello', 'world']
+
+  //   return postPlayerScore(actual).then((response) => {
+  //     console.log(response)
+  //     expect(response).toBe('Object needs property of name and score')
+  //   })
+
+  // })
+
+
+  test('should ignore uneeded properties', () => {
+
+    const actual = {
+      name: 'lizzy',
+      score: 10,
+      date: 'newly created at 4:53pm!!',
+      time: 5
+    }
+
+    return postPlayerScore(actual).then((response) => {
+      expect(response).toEqual(
+        expect.objectContaining({
+          _id: expect.any(Object),
+          name: expect.any(String),
+          score: expect.any(Number)
+        })
+      )
+    })
+
+  })
+})

@@ -3,8 +3,7 @@ const {
   towersModel,
   goalModel,
   playerModel,
-  scoresModel,
-  addPlayerScoreModel
+  scoresModel
 } = require("../models/gameModels");
 const { convertToJson } = require("../utils/utils");
 
@@ -69,7 +68,6 @@ const getGameScore = () => {
       if (apiResult.length === 0) return Promise.reject("No scores found");
 
       const convertedApiResult = convertToJson(apiResult);
-      console.log(convertedApiResult)
       return convertedApiResult;
     })
     .catch((err) => {
@@ -78,13 +76,18 @@ const getGameScore = () => {
 };
 
 const postPlayerScore = (playerScoreObject) => {
-  console.log(playerScoreObject.name)
-  let object = { $push: { playerScoreObject } }
+  
+  if (!playerScoreObject.hasOwnProperty('name') && !playerScoreObject.hasOwnProperty('score')) {
+    return Promise.reject("Object needs property of name and score")
+  }
+  
+  return scoresModel.create(playerScoreObject).then((apiResult) => {
 
-  return scoresModel.create(playerScoreObject ).then((apiResult) => {
+    const convertedApiResult = apiResult
+    return convertedApiResult;
+  }).catch((err) => {
 
-    console.log('anything')
-    console.log('in controller ' + apiResult)
+    console.log(err)
   })
 }
 
