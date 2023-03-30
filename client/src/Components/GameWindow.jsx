@@ -61,6 +61,11 @@ function GameWindow({ socket, id, allIds }) {
       decreaseGoalHealth();
     });
 
+    // Decreases goal health/width when enemy overlaps with goal
+    // uncomment when enemies are added
+
+    // this.physics.add.overlap(enemies, goal, decreaseGoalHealth)
+
     cursors = this.input.keyboard.createCursorKeys();
   }
 
@@ -75,6 +80,16 @@ function GameWindow({ socket, id, allIds }) {
         let data = player2.y;
         socket.emit("updatePlayerTwoPosition", data);
       }
+    } else if (cursors.down.isDown) {
+      if (id === allIds[0]) {
+        player1.setVelocityY(160);
+        let data = player1.y;
+        socket.emit("updatePlayerOnePosition", data);
+      } else {
+        player2.setVelocityY(160);
+        let data = player2.y;
+        socket.emit("updatePlayerTwoPosition", data);
+      }
     } else {
       if (id === allIds[0]) {
         player1.setVelocityY(0);
@@ -86,17 +101,17 @@ function GameWindow({ socket, id, allIds }) {
         socket.emit("updatePlayerTwoPosition", data);
       }
     }
-
-    socket.on("updatePlayerOnePosition", (location) => {
-      console.log(location);
-      player1.y = location.y;
-    });
-
-    socket.on("updatePlayerTwoPosition", (location) => {
-      console.log(location);
-      player2.y = location.y;
-    });
   }
+
+  socket.on("updatePlayerOnePosition", (location) => {
+    console.log(location);
+    player1.y = location.y;
+  });
+
+  socket.on("updatePlayerTwoPosition", (location) => {
+    console.log(location);
+    player2.y = location.y;
+  });
 
   function decreaseGoalHealth() {
     if (goalHealthBar.width > 0) {
