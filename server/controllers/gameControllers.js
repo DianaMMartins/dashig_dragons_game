@@ -3,7 +3,7 @@ const {
   towersModel,
   goalModel,
   playerModel,
-  scoresModel,
+  scoresModel
 } = require("../models/gameModels");
 const { convertToJson } = require("../utils/utils");
 
@@ -75,4 +75,16 @@ const getGameScore = () => {
     });
 };
 
-module.exports = { getEnemies, getGoal, getTowers, getPlayer, getGameScore };
+const postPlayerScore = (playerScoreObject) => {
+
+  return scoresModel.create(playerScoreObject).then((apiResult) => {
+    const convertedApiResult = apiResult
+    return convertedApiResult;
+
+  }).catch((err) => {
+
+    console.log(err)
+  })
+}
+
+module.exports = { getEnemies, getGoal, getTowers, getPlayer, getGameScore, postPlayerScore };

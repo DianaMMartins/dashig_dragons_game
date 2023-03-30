@@ -5,6 +5,8 @@ const {
   getGoal,
   getPlayer,
   getGameScore,
+  postPlayerScore
+
 } = require("../controllers/gameControllers");
 
 beforeEach(async () => {
@@ -59,18 +61,11 @@ describe("Test suite for get scoreboard", () => {
         expect.arrayContaining([
           expect.objectContaining({
             _id: expect.any(Object),
-            player: expect.any(Object),
+            name: expect.any(String),
+            score: expect.any(Number),
           }),
         ])
       );
-      scores.forEach((playerScore) => {
-        expect(playerScore.player).toEqual(
-          expect.objectContaining({
-            name: expect.any(String),
-            score: expect.any(Number),
-          })
-        );
-      });
     });
   });
 });
@@ -155,3 +150,43 @@ describe("Testing Player", () => {
     });
   });
 });
+
+describe("Testing Post/Scores", () => {
+
+  test('should return correct data and type from user', () => {
+    const actual = {
+      name: 'Lisa MArch 30th!',
+      score: 2
+    }
+    return postPlayerScore(actual).then((response) => {
+      expect(response).toEqual(
+        expect.objectContaining({
+          _id: expect.any(Object),
+          name: expect.any(String),
+          score: expect.any(Number)
+        })
+      )
+    })
+  })
+
+  test('should ignore uneeded properties', () => {
+
+    const actual = {
+      name: 'March 30th!',
+      score: 15,
+      date: 'newly created at 4:53pm!!',
+      time: 5
+    }
+
+    return postPlayerScore(actual).then((response) => {
+      expect(response).toEqual(
+        expect.objectContaining({
+          _id: expect.any(Object),
+          name: expect.any(String),
+          score: expect.any(Number)
+        })
+      )
+    })
+
+  })
+})
