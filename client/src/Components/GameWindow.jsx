@@ -25,13 +25,15 @@ function GameWindow() {
   let goal;
   let goalHealthBar;
   let enemy1;
+  let tempEnemy1Health = 5;
+  let tempAtackDmg = 1;
   const game = new Phaser.Game(config);
 
   function preload() {
     this.load.image("map", map);
     this.load.image("goal", cristales);
     this.load.image("imageEnemy", imageEnemy);
-      //coins counter
+    //coins counter
     //player
     //towers
     //scoreboard
@@ -49,21 +51,38 @@ function GameWindow() {
       decreaseGoalHealth();
     });
 
-    let enemy1 = this.physics.add.image(-100, 200, "imageEnemy")
+    enemy1 = this.physics.add.image(-100, 200, "imageEnemy");
     enemy1.scale = 0.2;
 
     this.physics.moveToObject(enemy1, goal, 150);
     //150 is the speed from the database object (1) 1 === 100
 
-    this.physics.add.collider(enemy1, goal, decreaseGoalHealth, null, this)
+    enemy1.setInteractive().on("pointerover", () => {
+      decreaseEnemyHealth(tempAtackDmg, tempEnemy1Health, enemy1);
+    });
+
+    this.physics.add.collider(enemy1, goal, decreaseGoalHealth, null, this);
     //on hit decreaseGoalHealth
     //make enemy go back to start
     //reset stats
   }
 
-  function update() {}
+  function update() {
+    //update enemy to go back to group && reset stats
+  }
 
-  
+  function decreaseEnemyHealth(damageTaken, enemyHealth, enemy1) {
+    const updatedEnemyHealth = enemyHealth - damageTaken;
+    // enemy1.setTint(0xff0000);
+    // setTimeout(() => {
+    //   enemy1.setTint();
+    // }, 250);
+    if (updatedEnemyHealth <= 0) {
+      enemy1.body.stop();
+      console.log("you are dead!");
+    }
+    tempEnemy1Health = updatedEnemyHealth;
+  }
 
   function decreaseGoalHealth(enemy1) {
     if (goalHealthBar.width > 0) {
@@ -73,7 +92,7 @@ function GameWindow() {
         goal.setTint();
       }, 250);
     }
-    enemy1.body.stop()
+    enemy1.body.stop();
     //send back to group
   }
 
