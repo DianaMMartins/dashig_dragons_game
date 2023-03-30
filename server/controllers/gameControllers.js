@@ -76,15 +76,11 @@ const getGameScore = () => {
 };
 
 const postPlayerScore = (playerScoreObject) => {
-  
-  if (!playerScoreObject.hasOwnProperty('name') && !playerScoreObject.hasOwnProperty('score')) {
-    return Promise.reject("Object needs property of name and score")
-  }
-  
-  return scoresModel.create(playerScoreObject).then((apiResult) => {
 
+  return scoresModel.create(playerScoreObject).then((apiResult) => {
     const convertedApiResult = apiResult
     return convertedApiResult;
+
   }).catch((err) => {
 
     console.log(err)

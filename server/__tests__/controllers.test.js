@@ -153,12 +153,9 @@ describe("Testing Player", () => {
 
 describe("Testing Post/Scores", () => {
 
-  //should return expected error string 
-  //should ignore uneeded properties
-
   test('should return correct data and type from user', () => {
     const actual = {
-      name: 'Lia',
+      name: 'Lisa MArch 30th!',
       score: 2
     }
     return postPlayerScore(actual).then((response) => {
@@ -172,28 +169,11 @@ describe("Testing Post/Scores", () => {
     })
   })
 
-  //look into error handling(maybe update mongodb to have properties as required, then update test to check if its empty ot not)
-  // test('should return expected error string', () => {
-
-  //   const actual = {
-  //     date: 'newly created at 4:53pm!!',
-  //     time: 5
-  //   }
-  //   const notValid = ['hello', 'world']
-
-  //   return postPlayerScore(actual).then((response) => {
-  //     console.log(response)
-  //     expect(response).toBe('Object needs property of name and score')
-  //   })
-
-  // })
-
-
   test('should ignore uneeded properties', () => {
 
     const actual = {
-      name: 'lizzy',
-      score: 10,
+      name: 'March 30th!',
+      score: 15,
       date: 'newly created at 4:53pm!!',
       time: 5
     }

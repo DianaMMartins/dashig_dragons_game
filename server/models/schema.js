@@ -3,13 +3,15 @@ const Schema = mongoose.Schema;
 
 const schemaForAll = new Schema({});
 const scoreSchema = new Schema({
-    // player: {
-    //     name: String,
-    //     score: Number
-    // }
-    name: String,
-    score: Number
-    
+    name: {
+        type: String,
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true
+    }
+
 },
     { versionKey: false }
 
