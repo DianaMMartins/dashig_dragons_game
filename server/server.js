@@ -22,20 +22,32 @@ const {
   postPlayerScore
 } = require("./controllers/gameControllers");
 
-const playerScore = {
-  name: 'Sarah',
-  score: 11
-}
-
-postPlayerScore(playerScore).then((data) => {
-
-  console.log(' in sever ' + data)
-})
+let enemyLevel1 = []
+let enemiesGroup = []
 
 io.on("connection", (socket) => {
-  getEnemies().then((data) => { });
-  getTowers().then((data) => { });
-  getGoal().then((data) => { });
+
+  //check players are there and ready to play
+  io.emit('', enemyLevel1)
+  getEnemies().then((enemyData) => {
+    console.log(enemyData)
+
+   
+    const enemyTemplate = {
+      health: enemyData[0].health,
+      attackDamage: enemyData[0].attackDamage,
+      coinsOnKill: enemyData[0].coinsOnKill,
+      walkSpeed: enemyData[0].walkSpeed,
+      level:enemyData[0].level
+    }
+
+    enemiesGroup = [{ ...enemyTemplate }, { ...enemyTemplate }, { ...enemyTemplate }, { ...enemyTemplate }, { ...enemyTemplate }, { ...enemyTemplate }]
+    console.log(enemiesGroup)
+
+
+  });
+
+
 
 
 
