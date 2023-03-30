@@ -19,32 +19,45 @@ const {
   getGoal,
   getPlayer,
   getGameScore,
-  postPlayerScore
+  postPlayerScore,
 } = require("./controllers/gameControllers");
 
-const playerScore = {
-  name: 'Sarah',
-  score: 11
-}
-
-postPlayerScore(playerScore).then((data) => {
-
-  console.log(' in sever ' + data)
-})
+let playerIds = [];
+let players = [];
 
 io.on("connection", (socket) => {
-  getEnemies().then((data) => { });
-  getTowers().then((data) => { });
-  getGoal().then((data) => { });
-
-
-
   console.log(socket.id, "connected");
-  socket.emit("Hello", "world");
-  // socket.on("Hello", () => {
 
-  //   socket.emit("Bye' ());
-  // });
+  if (playerIds.length < 2) {
+    playerIds.push(socket.id);
+
+    socket.emit("assignId", socket.id);
+  }
+
+  if (playerIds.length === 2) {
+    io.emit("sendAllIds", playerIds);
+    getPlayer().then((playerData) => {
+      const playerTemplate = {
+        location: { y: 0 },
+        health: playerData[0].health,
+        coins: playerData[0].coins,
+        weapon: playerData[0].weapon,
+      };
+
+      players = [{ ...playerTemplate }, { ...playerTemplate }];
+    });
+  }
+
+  socket.on("updatePlayerOnePosition", (data) => {
+    players[0].location.y = data;
+    socket.broadcast.emit("updatePlayerOnePosition", players[0].location);
+  });
+
+  socket.on("updatePlayerTwoPosition", (data) => {
+    players[1].location.y = data;
+    socket.broadcast.emit("updatePlayerTwoPosition", players[1].location);
+  });
+
   socket.on("disconnect", () => {
     console.log("disconnect");
   });

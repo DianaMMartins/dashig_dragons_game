@@ -6,12 +6,12 @@ import GameWindow from "./Components/GameWindow.jsx";
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [isLoading, setIsLoading] = useState(true);
+  const [id, setId] = useState("");
+  const [allIds, setAllIds] = useState([]);
 
   useEffect(() => {
     function onConnect() {
-      socket.emit("Hello");
       console.log("connected");
-      setIsLoading(false);
       setIsConnected(true);
     }
     function onDisconnect() {
@@ -22,15 +22,26 @@ function App() {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
 
-    // return () => {
-      // socket.off("connect", onConnect);
-      // socket.off("disconnect", onDisconnect);
-    // };
+    socket.on("assignId", (clientId) => {
+      console.log(clientId);
+      setId(clientId);
+    });
+
+    socket.on("sendAllIds", (playerIds) => {
+      setIsLoading(false);
+      setAllIds(playerIds);
+      console.log(id, allIds);
+    });
   }, []);
 
   return (
     <div className="App">
-      <h1>Hi</h1> {isLoading ? <h1>Loading ...</h1> : <GameWindow />}
+      <h1>Hi</h1>{" "}
+      {isLoading ? (
+        <h1>Loading ...</h1>
+      ) : (
+        <GameWindow socket={socket} id={id} allIds={allIds} />
+      )}
     </div>
   );
 }
