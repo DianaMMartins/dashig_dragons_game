@@ -1,8 +1,7 @@
 import Phaser from "phaser";
 import map from "../assets/map.jpg";
 import cristales from "../assets/cristals.png";
-import imageEnemy from "../assets/wizard.png"
-import pathOne from "../assets/"
+import imageEnemy from "../assets/wizard.png";
 
 function GameWindow() {
   const config = {
@@ -25,19 +24,14 @@ function GameWindow() {
 
   let goal;
   let goalHealthBar;
-  let enemy;
-  //get enemy objs from db
-  const enemies = [];
-
+  let enemy1;
   const game = new Phaser.Game(config);
 
   function preload() {
     this.load.image("map", map);
     this.load.image("goal", cristales);
     this.load.image("imageEnemy", imageEnemy);
-    //coins counter
-    //goal
-    //enemies
+      //coins counter
     //player
     //towers
     //scoreboard
@@ -55,17 +49,23 @@ function GameWindow() {
       decreaseGoalHealth();
     });
 
-    enemies = this.physics.add.group();
-    this.physics.add.collider(enemies, goal, hitGoal)
+    let enemy1 = this.physics.add.image(-100, 200, "imageEnemy")
+    enemy1.scale = 0.2;
 
-    function hitGoal(goal, enemies) {
-      //causes damage to goal when enemy collider reaches goal collider
-    }
+    this.physics.moveToObject(enemy1, goal, 150);
+    //150 is the speed from the database object (1) 1 === 100
+
+    this.physics.add.collider(enemy1, goal, decreaseGoalHealth, null, this)
+    //on hit decreaseGoalHealth
+    //make enemy go back to start
+    //reset stats
   }
 
   function update() {}
 
-  function decreaseGoalHealth() {
+  
+
+  function decreaseGoalHealth(enemy1) {
     if (goalHealthBar.width > 0) {
       goal.setTint(0xff0000);
       goalHealthBar.width -= 100;
@@ -73,6 +73,8 @@ function GameWindow() {
         goal.setTint();
       }, 250);
     }
+    enemy1.body.stop()
+    //send back to group
   }
 
   return <div id="phaserContainer"></div>;
