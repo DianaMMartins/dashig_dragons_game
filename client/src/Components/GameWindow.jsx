@@ -33,7 +33,9 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
   let projectile2;
   let player1Shooting = false;
   let player2Shooting = false;
-  let enemyLevel1 = enemiesData[0];
+  let enemy;
+  let enemiesLeft;
+  // let enemyLevel1 = enemiesData[0];
   const lanesY = [135, 270, 405, 540, 675];
 
   const game = new Phaser.Game(config);
@@ -45,13 +47,11 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
     //coins counter
-    //player
     //towers
     //scoreboard
     //timer
   }
 
-  //
   function create() {
     this.add.image(0, 0, "map").setOrigin(0, 0);
     goal = this.physics.add.staticImage(920, 384, "goal");
@@ -81,21 +81,16 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     //on hit decreaseGoalHealth
     //make enemy go back to start
     //reset stats
-    const enemiesLeft = this.add.group();
-    for (let i = 0; i < 10; i++) {
-      const enemyYPosition = lanesY[Math.floor(Math.random() * lanesY.length)];
-      let enemy = this.physics.add.sprite(0, enemyYPosition, "imageEnemy");
-      enemy.scale = 0.2;
-      const enemyGo = enemyPlay();
-      enemy.x = enemyGo;
-      this.physics.moveToObject(
-        enemy,
-        { x: goal.x, y: enemy.y },
-        enemyLevel1.walkSpeed
-      );
-      enemiesLeft.add(enemy);
-      console.log(enemy.x);
-    }
+
+    enemiesLeft = this.physics.add.group({
+      setXY: { x: -100, y: -100 },
+      repeat: 9,
+      visible: true,
+      key: "imageEnemy",
+    });
+    enemiesLeft.scaleXY(-0.8);
+
+    socket.emit('enemiesCreated')
 
     this.physics.add.collider(
       enemiesLeft,
@@ -104,23 +99,6 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       null,
       this
     );
-
-    const enemiesRight = this.add.group();
-    for (let i = 0; i < 10; i++) {
-      const enemyYPosition = lanesY[Math.floor(Math.random() * lanesY.length)];
-      let enemy = this.physics.add.sprite(0, enemyYPosition, "imageEnemy");
-      enemy.scale = 0.2;
-      enemy.flipX = true;
-      const enemyGo = Math.abs(enemyPlay()) + 1920;
-
-      enemy.x = enemyGo;
-      this.physics.moveToObject(
-        enemy,
-        { x: goal.x, y: enemy.y },
-        enemyLevel1.walkSpeed
-      );
-      enemiesRight.add(enemy);
-    }
 
     projectile1 = this.physics.add.group({
       setXY: { x: 960, y: 540 },
@@ -171,7 +149,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     });
 
     this.physics.add.collider(
-      enemiesRight,
+      enemiesLeft,
       goal,
       decreaseGoalHealth,
       null,
@@ -270,6 +248,18 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
         break;
       }
     }
+  });
+
+  socket.on("enemyPosition", (xArray, yArray) => {
+    const enemies = enemiesLeft.children.entries;
+      for (let i = 0; i < 10; i++) {
+
+      enemies[i].x = xArray[i];
+      enemies[i].y = lanesY[yArray[i]];
+      console.log(enemies[i].x, xArray[i]);
+      enemies[i].body.velocity.set(160, 0)
+    }
+    console.log(enemiesLeft)
   });
 
   function decreaseEnemyHealth(damageTaken, enemyHealth, enemy1) {
