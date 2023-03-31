@@ -22,7 +22,7 @@ const {
   postPlayerScore,
 } = require("./controllers/gameControllers");
 
-let enemyLevel1 = [];
+
 let enemiesGroup = [];
 let playerIds = [];
 let players = [];
