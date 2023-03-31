@@ -49,30 +49,34 @@ io.on("connection", (socket) => {
 	}
 
 	socket.on("updatePlayerOnePosition", (data, direction) => {
-		players[0].location.y = data;
-		socket.broadcast.emit(
-			"updatePlayerOnePosition",
-			players[0].location,
-			direction
-		);
+		if (players.length===2) {
+			players[0].location.y = data;
+			socket.broadcast.emit(
+				"updatePlayerOnePosition",
+				players[0].location,
+				direction
+			);
+		}
 	});
 
 	socket.on("updatePlayerTwoPosition", (data, direction) => {
-		players[1].location.y = data;
-		socket.broadcast.emit(
-			"updatePlayerTwoPosition",
-			players[1].location,
-			direction
-		);
+		if (players.length===2) {
+			players[1].location.y = data;
+			socket.broadcast.emit(
+				"updatePlayerTwoPosition",
+				players[1].location,
+				direction
+			);
+		}
 	});
 
-	socket.on("player1shot",()=>{
-    io.emit("player1shot")
-  });
+	socket.on("player1shot", () => {
+		io.emit("player1shot");
+	});
 
-  socket.on("player2shot",()=>{
-    io.emit("player2shot")
-  })
+	socket.on("player2shot", () => {
+		io.emit("player2shot");
+	});
 
 	socket.on("disconnect", () => {
 		console.log("disconnect");
