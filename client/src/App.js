@@ -37,6 +37,7 @@ function App() {
     // };
   }, []);
 
+
   return (
     <div className="App">
       <h1>Hi</h1> {isLoading ? <h1>Loading ...</h1> : <GameWindow socket={socket} enemiesData={enemiesData} />}

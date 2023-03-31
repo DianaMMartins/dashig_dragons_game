@@ -30,9 +30,9 @@ function GameWindow({ socket, enemiesData }) {
   // let enemiesGroup = [];
 
   let enemiesGroup = enemiesData;
+
   let enemyLevel1 = enemiesData[0];
-  let enemyLevel2 = enemiesData[1];
-  let enemies;
+  const lanesY = [135, 270, 405, 540, 675]
   let enemyImg;
 
   const game = new Phaser.Game(config);
@@ -52,7 +52,6 @@ function GameWindow({ socket, enemiesData }) {
   function create() {
     this.add.image(0, 0, "map").setOrigin(0, 0);
     goal = this.physics.add.staticImage(920, 384, "goal");
-    // enemyImg = this.physics.add.staticImage(300, 100, "imageEnemy");
 
     const color1 = new Phaser.Display.Color(150, 0, 0);
     goalHealthBar = this.add.rectangle(920, 50, 300, 50, color1.color);
@@ -61,36 +60,55 @@ function GameWindow({ socket, enemiesData }) {
     //   decreaseGoalHealth();
     // });
 
-    // enemy1 = this.physics.add.image(-100, 200, "imageEnemy");
-    // enemy1.scale = 0.2;
-
-    // this.physics.moveToObject(enemy1, goal, 150);
-    // //150 is the speed from the database object (1) 1 === 100
-
     // enemy1.setInteractive().on("pointerover", () => {
     //   decreaseEnemyHealth(tempAtackDmg, tempEnemy1Health, enemy1);
     // });
 
-    // this.physics.add.collider(enemy1, goal, decreaseGoalHealth, null, this);
     //on hit decreaseGoalHealth
     //make enemy go back to start
     //reset stats
 
-    let enemies = this.physics.add.group({
-      key: "imageEnemy",
-      repeat: 4,
-      setXY: { x: 100, y: 300, stepX: 50, stepY: 70 },
-      
-    });
+    const enemiesLeft = this.add.group();
+    for (let i = 0; i < 10; i++) {
+      const enemyYPosition = lanesY[Math.floor(Math.random()*lanesY.length)]
+      let enemy = this.physics.add.sprite(0, enemyYPosition, "imageEnemy");
+      enemy.scale = 0.2;
+      const enemyGo = enemyPlay();
+      enemy.x = enemyGo;
+      this.physics.moveToObject(
+        enemy,
+        { x: goal.x, y: enemy.y },
+        enemyLevel1.walkSpeed
+        );
+        enemiesLeft.add(enemy);
+        console.log(enemy.x);
+     }
 
-    enemies.children.iterate((child) => {
-      child.scale = 0.2;
-      this.physics.moveToObject(child, goal, enemyLevel1.walkSpeed);
-    });
+    this.physics.add.collider(enemiesLeft, goal, decreaseGoalHealth, null, this);
+   
+    const enemiesRight = this.add.group();
+    for (let i = 0; i < 10; i++) {
+      const enemyYPosition = lanesY[Math.floor(Math.random()*lanesY.length)]
+      let enemy = this.physics.add.sprite(0, enemyYPosition, "imageEnemy")
+      enemy.scale = 0.2;
+      enemy.flipX=true;
+      const enemyGo = Math.abs(enemyPlay()) + 1920;
 
-     this.physics.add.collider(enemies, goal, decreaseGoalHealth, null, this);
+      enemy.x = enemyGo;
+      this.physics.moveToObject(
+        enemy,
+        { x: goal.x, y: enemy.y },
+        enemyLevel1.walkSpeed
+        );
+        enemiesRight.add(enemy);
+     }
 
+    this.physics.add.collider(enemiesRight, goal, decreaseGoalHealth, null, this);
+  }
 
+  function enemyPlay() {
+    let enemyCall = - (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180);
+    return enemyCall;
   }
 
   function update() {
@@ -119,8 +137,8 @@ function GameWindow({ socket, enemiesData }) {
         goal.setTint();
       }, 250);
     }
-    // enemy1.body.stop();
-    //send back to group
+    enemy1.body.stop();
+    // send back to group
   }
 
   return <div id="phaserContainer"></div>;
