@@ -38,7 +38,7 @@ for (let i = 0; i < 10; i++) {
   );
   enemyPositionsX.push(randomX);
   const randomXRight = (
-    Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
+    (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180) + 1920
   );
   enemyPositionsXRight.push(randomXRight);
 }
@@ -75,9 +75,11 @@ io.on("connection", (socket) => {
     }
     
     socket.on('enemiesCreated', ()=>{
-      socket.emit('enemyPosition', enemyPositionsX, enemyPositionsY, enemyPositionsXRight)
+      socket.emit('enemyPosition', enemyPositionsX, enemyPositionsY)
+      socket.emit('enemyPositionRight', enemyPositionsXRight, enemyPositionsY)
       console.log(enemyPositionsX);
       console.log(enemyPositionsY);
+      console.log(enemyPositionsXRight);
   })
 
   socket.on("updatePlayerOnePosition", (data, direction) => {

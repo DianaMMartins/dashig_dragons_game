@@ -35,6 +35,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
   let player2Shooting = false;
   let enemy;
   let enemiesLeft;
+  let enemiesRight;
   // let enemyLevel1 = enemiesData[0];
   const lanesY = [135, 270, 405, 540, 675];
 
@@ -89,6 +90,14 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       key: "imageEnemy",
     });
     enemiesLeft.scaleXY(-0.8);
+    
+    enemiesRight = this.physics.add.group({
+      setXY: { x: -100, y: 2100 },
+      repeat: 9,
+      visible: true,
+      key: "imageEnemy",
+    });
+    enemiesRight.scaleXY(-0.8);
 
     socket.emit('enemiesCreated')
 
@@ -155,11 +164,6 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       null,
       this
     );
-  }
-
-  function enemyPlay() {
-    let enemyCall = -(Math.floor(Math.floor(Math.random() * 1080) / 100) * 180);
-    return enemyCall;
   }
 
   function update() {
@@ -260,6 +264,18 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       enemies[i].body.velocity.set(160, 0)
     }
     console.log(enemiesLeft)
+  });
+
+  socket.on("enemyPositionRight", (xArray, yArray) => {
+    const enemies = enemiesRight.children.entries;
+      for (let i = 0; i < 10; i++) {
+
+      enemies[i].x = xArray[i];
+      enemies[i].y = lanesY[yArray[i]];
+      console.log(enemies[i].x, xArray[i]);
+      enemies[i].body.velocity.set(-160, 0)
+    }
+    console.log(enemiesRight)
   });
 
   function decreaseEnemyHealth(damageTaken, enemyHealth, enemy1) {
