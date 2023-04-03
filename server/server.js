@@ -26,16 +26,32 @@ const {
 let enemiesGroup = [];
 let playerIds = [];
 let players = [];
+const enemyPositionsX = [];
+const enemyPositionsXRight = [];
+const enemyPositionsY = [];
+
+for (let i = 0; i < 10; i++) {
+  const randomY = Math.floor(Math.random() * 5);
+  enemyPositionsY.push(randomY);
+  const randomX = -(
+    Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
+  );
+  enemyPositionsX.push(randomX);
+  const randomXRight = (
+    (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180) + 1920
+  );
+  enemyPositionsXRight.push(randomXRight);
+}
 
 io.on("connection", (socket) => {
   console.log(socket.id, "connected");
-  
+
   if (playerIds.length < 2) {
     playerIds.push(socket.id);
-    
+
     socket.emit("assignId", socket.id);
   }
-  
+
   if (playerIds.length === 2) {
     io.emit("sendAllIds", playerIds);
     getPlayer().then((playerData) => {
@@ -45,15 +61,19 @@ io.on("connection", (socket) => {
         coins: playerData[0].coins,
         weapon: playerData[0].weapon,
       };
-      
+
       players = [{ ...playerTemplate }, { ...playerTemplate }];
     });
   }
-  
-  getEnemies().then((enemyData) => {
-    enemiesGroup = enemyData;
-  });
-  socket.emit("getEnemiesGroup", enemiesGroup);
+
+
+  socket.on('enemiesCreated', () => {
+    socket.emit('enemyPosition', enemyPositionsX, enemyPositionsY)
+    socket.emit('enemyPositionRight', enemyPositionsXRight, enemyPositionsY)
+    console.log(enemyPositionsX);
+    console.log(enemyPositionsY);
+    console.log(enemyPositionsXRight);
+  })
 
   socket.on("updatePlayerOnePosition", (data, direction) => {
     if (players.length === 2) {
@@ -62,17 +82,17 @@ io.on("connection", (socket) => {
         "updatePlayerOnePosition",
         players[0].location,
         direction
-        );
-      }
-    });
-    
-    socket.on("updatePlayerTwoPosition", (data, direction) => {
-      if (players.length === 2) {
-        players[1].location.y = data;
-        socket.broadcast.emit(
-          "updatePlayerTwoPosition",
-          players[1].location,
-          direction
+      );
+    }
+  });
+
+  socket.on("updatePlayerTwoPosition", (data, direction) => {
+    if (players.length === 2) {
+      players[1].location.y = data;
+      socket.broadcast.emit(
+        "updatePlayerTwoPosition",
+        players[1].location,
+        direction
       );
     }
   });
@@ -88,7 +108,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("disconnect");
   });
-});
+})
 
 const db = mongoose
   .connect(

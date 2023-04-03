@@ -10,7 +10,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     type: Phaser.Auto,
     parent: "phaserContainer",
     width: 1920,
-    heigh: 1080,
+    height: 1080,
     physics: {
       default: "arcade",
       arcade: {
@@ -33,8 +33,13 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
   let projectile2;
   let player1Shooting = false;
   let player2Shooting = false;
-  let enemyLevel1 = enemiesData[0];
-  const lanesY = [135, 270, 405, 540, 675];
+  let enemy;
+  let enemiesLeft;
+  let enemiesRight;
+  // let enemyLevel1 = enemiesData[0];
+  const lanesY = [160, 344, 540, 736, 920];
+  let enemiesCounterLeft = 10;
+  let enemiesCounterRight = 10;
 
   const game = new Phaser.Game(config);
 
@@ -45,16 +50,14 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
     //coins counter
-    //player
     //towers
     //scoreboard
     //timer
   }
 
-  //
   function create() {
     this.add.image(0, 0, "map").setOrigin(0, 0);
-    goal = this.physics.add.staticImage(920, 384, "goal");
+    goal = this.physics.add.staticImage(920, 540, "goal");
 
     player1 = this.physics.add
       .sprite(700, 500, "character")
@@ -81,46 +84,40 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     //on hit decreaseGoalHealth
     //make enemy go back to start
     //reset stats
-    const enemiesLeft = this.add.group();
-    for (let i = 0; i < 10; i++) {
-      const enemyYPosition = lanesY[Math.floor(Math.random() * lanesY.length)];
-      let enemy = this.physics.add.sprite(0, enemyYPosition, "imageEnemy");
-      enemy.scale = 0.2;
-      const enemyGo = enemyPlay();
-      enemy.x = enemyGo;
-      this.physics.moveToObject(
-        enemy,
-        { x: goal.x, y: enemy.y },
-        enemyLevel1.walkSpeed
-      );
-      enemiesLeft.add(enemy);
-      console.log(enemy.x);
-    }
+
+    enemiesLeft = this.physics.add.group({
+      setXY: { x: -100, y: -100 },
+      repeat: 9,
+      visible: true,
+      key: "imageEnemy",
+    });
+    enemiesLeft.scaleXY(-0.7);
+
+    enemiesLeft.children.iterate(function (child) {
+      child.side = "left";
+    });
+
+    enemiesRight = this.physics.add.group({
+      setXY: { x: -100, y: 2100 },
+      repeat: 9,
+      visible: true,
+      key: "imageEnemy",
+    });
+    enemiesRight.scaleXY(-0.7);
+
+    enemiesRight.children.iterate(function (child) {
+      child.side = "right";
+    });
+
+    socket.emit("enemiesCreated");
 
     this.physics.add.collider(
-      enemiesLeft,
+      [enemiesLeft, enemiesRight],
       goal,
       decreaseGoalHealth,
       null,
       this
     );
-
-    const enemiesRight = this.add.group();
-    for (let i = 0; i < 10; i++) {
-      const enemyYPosition = lanesY[Math.floor(Math.random() * lanesY.length)];
-      let enemy = this.physics.add.sprite(0, enemyYPosition, "imageEnemy");
-      enemy.scale = 0.2;
-      enemy.flipX = true;
-      const enemyGo = Math.abs(enemyPlay()) + 1920;
-
-      enemy.x = enemyGo;
-      this.physics.moveToObject(
-        enemy,
-        { x: goal.x, y: enemy.y },
-        enemyLevel1.walkSpeed
-      );
-      enemiesRight.add(enemy);
-    }
 
     projectile1 = this.physics.add.group({
       setXY: { x: 960, y: 540 },
@@ -140,6 +137,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
             this.setVisible(false);
             this.setX(960);
             this.setY(540);
+            this.body.velocity.set(0, 0);
           }
         },
         child
@@ -164,6 +162,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
             this.setVisible(false);
             this.setX(960);
             this.setY(540);
+            this.body.velocity.set(0, 0);
           }
         },
         child
@@ -171,17 +170,20 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     });
 
     this.physics.add.collider(
-      enemiesRight,
-      goal,
-      decreaseGoalHealth,
+      enemiesLeft,
+      projectile1,
+      decreaseEnemyHealth,
       null,
       this
     );
-  }
 
-  function enemyPlay() {
-    let enemyCall = -(Math.floor(Math.floor(Math.random() * 1080) / 100) * 180);
-    return enemyCall;
+    this.physics.add.collider(
+      enemiesRight,
+      projectile2,
+      decreaseEnemyHealth,
+      null,
+      this
+    );
   }
 
   function update() {
@@ -246,6 +248,17 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     }
   });
 
+  socket.on("updatePlayerOnePosition", (location, direction) => {
+    player1.y = location.y;
+    if (direction === "up") {
+      player1.setAngle(90);
+    } else if (direction === "down") {
+      player1.setAngle(-90);
+    } else {
+      player1.setAngle(0);
+    }
+  });
+
   socket.on("player1shot", () => {
     const bullets = projectile1.children.entries;
     for (let i = 0; i < bullets.length; i++) {
@@ -272,7 +285,43 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     }
   });
 
-  function decreaseEnemyHealth(damageTaken, enemyHealth, enemy1) {
+  socket.on("enemyPosition", (xArray, yArray) => {
+    const enemies = enemiesLeft.children.entries;
+    for (let i = 0; i < 10; i++) {
+      enemies[i].x = xArray[i];
+      enemies[i].y = lanesY[yArray[i]];
+      console.log(enemies[i].x, xArray[i]);
+      enemies[i].body.velocity.set(60, 0);
+    }
+    console.log(enemiesLeft);
+  });
+
+  socket.on("enemyPositionRight", (xArray, yArray) => {
+    const enemies = enemiesRight.children.entries;
+    for (let i = 0; i < 10; i++) {
+      enemies[i].x = xArray[i];
+      enemies[i].y = lanesY[yArray[i]];
+      console.log(enemies[i].x, xArray[i]);
+      enemies[i].body.velocity.set(-60, 0);
+    }
+    console.log(enemiesRight);
+  });
+
+  function decreaseEnemyHealth(enemy, bullet) {
+    enemy.disableBody(true, true);
+
+    bullet.setVisible(false);
+    bullet.setX(960);
+    bullet.setY(540);
+    bullet.body.velocity.set(0, 0);
+
+    if (enemy.side === "left") {
+      enemiesCounterLeft--;
+    } else {
+      enemiesCounterRight--;
+    }
+    
+
     // const updatedEnemyHealth = enemyHealth - damageTaken;
     // enemy1.setTint(0xff0000);
     // setTimeout(() => {
@@ -286,7 +335,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     // tempEnemy1Health = updatedEnemyHealth;
   }
 
-  function decreaseGoalHealth(enemy1) {
+  function decreaseGoalHealth(objective, enemy) {
     if (goalHealthBar.width > 0) {
       goal.setTint(0xff0000);
       goalHealthBar.width -= 100;
@@ -294,7 +343,15 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
         goal.setTint();
       }, 250);
     }
-    enemy1.body.stop();
+
+    if (enemy.side === "left") {
+      enemiesCounterLeft--;
+    } else {
+      enemiesCounterRight--;
+
+    }
+    enemy.disableBody(true, true);
+    // enemy.body.stop();
     // send back to group
   }
 

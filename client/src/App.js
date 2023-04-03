@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import GameWindow from "./Components/GameWindow.jsx";
 
 function App() {
-  const [enemiesData, setEnemiesData] = useState([]);
+  // const [enemiesData, setEnemiesData] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState("");
@@ -24,11 +24,11 @@ function App() {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
 
-    socket.on("getEnemiesGroup", (enemiesGroupData) => {
-      console.log(enemiesGroupData);
+    // socket.on("getEnemiesGroup", (enemiesGroupData) => {
+    //   console.log(enemiesGroupData);
 
-      setEnemiesData(enemiesGroupData);
-    });
+    //   setEnemiesData(enemiesGroupData);
+    // });
 
     // return () => {
     // socket.off("connect", onConnect);
@@ -54,7 +54,6 @@ function App() {
       ) : (
         <GameWindow
           socket={socket}
-          enemiesData={enemiesData}
           id={id}
           allIds={allIds}
         />
