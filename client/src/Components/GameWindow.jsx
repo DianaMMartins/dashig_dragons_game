@@ -241,6 +241,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       enemiesCounterLeft = 10;
       enemiesCounterRight = 10;
     }
+    // console.log
     //update enemy to go back to group && reset stats
   }
 
