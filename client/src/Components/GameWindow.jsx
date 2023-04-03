@@ -234,6 +234,13 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
         player2Shooting = false;
       }
     }
+
+    if (enemiesCounterLeft === 0 && enemiesCounterRight === 0) {
+      socket.emit("generateNewEnemies");
+      socket.emit("enemiesCreated");
+      enemiesCounterLeft = 10;
+      enemiesCounterRight = 10;
+    }
     //update enemy to go back to group && reset stats
   }
 
@@ -285,13 +292,15 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     }
   });
 
-  socket.on("enemyPosition", (xArray, yArray) => {
+  socket.on("enemyPositionLeft", (xArray, yArray) => {
     const enemies = enemiesLeft.children.entries;
     for (let i = 0; i < 10; i++) {
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
       console.log(enemies[i].x, xArray[i]);
-      enemies[i].body.velocity.set(60, 0);
+      enemies[i].body.velocity.set(160, 0);
+
+      enemies[i].enableBody(null, null, null, true, true);
     }
     console.log(enemiesLeft);
   });
@@ -302,7 +311,8 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
       console.log(enemies[i].x, xArray[i]);
-      enemies[i].body.velocity.set(-60, 0);
+      enemies[i].body.velocity.set(-160, 0);
+      enemies[i].enableBody(null, null, null, true, true);
     }
     console.log(enemiesRight);
   });
@@ -320,7 +330,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     } else {
       enemiesCounterRight--;
     }
-    
+    console.log(enemiesCounterLeft, enemiesCounterRight);
 
     // const updatedEnemyHealth = enemyHealth - damageTaken;
     // enemy1.setTint(0xff0000);
@@ -348,8 +358,8 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       enemiesCounterLeft--;
     } else {
       enemiesCounterRight--;
-
     }
+    console.log(enemiesCounterLeft, enemiesCounterRight);
     enemy.disableBody(true, true);
     // enemy.body.stop();
     // send back to group

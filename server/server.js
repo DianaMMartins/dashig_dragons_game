@@ -26,9 +26,11 @@ const {
 let enemiesGroup = [];
 let playerIds = [];
 let players = [];
-const enemyPositionsX = [];
-const enemyPositionsXRight = [];
-const enemyPositionsY = [];
+let enemyPositionXLeft = [];
+let enemyPositionsXRight = [];
+let enemyPositionsY = [];
+let enemyRequestCounter = 0;
+
 
 for (let i = 0; i < 10; i++) {
   const randomY = Math.floor(Math.random() * 5);
@@ -36,7 +38,7 @@ for (let i = 0; i < 10; i++) {
   const randomX = -(
     Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
   );
-  enemyPositionsX.push(randomX);
+  enemyPositionXLeft.push(randomX);
   const randomXRight = (
     (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180) + 1920
   );
@@ -68,11 +70,9 @@ io.on("connection", (socket) => {
 
 
   socket.on('enemiesCreated', () => {
-    socket.emit('enemyPosition', enemyPositionsX, enemyPositionsY)
+    socket.emit('enemyPositionLeft', enemyPositionXLeft, enemyPositionsY)
     socket.emit('enemyPositionRight', enemyPositionsXRight, enemyPositionsY)
-    console.log(enemyPositionsX);
-    console.log(enemyPositionsY);
-    console.log(enemyPositionsXRight);
+
   })
 
   socket.on("updatePlayerOnePosition", (data, direction) => {
@@ -104,6 +104,32 @@ io.on("connection", (socket) => {
   socket.on("player2shot", () => {
     io.emit("player2shot");
   });
+
+  socket.on("generateNewEnemies", () => {
+    enemyRequestCounter++
+    if (enemyRequestCounter === 2) {
+      enemyPositionsY = []
+      enemyPositionXLeft = []
+      enemyPositionsXRight = []
+      for (let i = 0; i < 10; i++) {
+        const randomY = Math.floor(Math.random() * 5);
+        enemyPositionsY.push(randomY);
+
+        const randomX = -(
+          Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
+        );
+        enemyPositionXLeft.push(randomX);
+        const randomXRight = (
+          (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180) + 1920
+        );
+        enemyPositionsXRight.push(randomXRight);
+      }
+      io.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY)
+      io.emit('enemyPositionRight', enemyPositionsXRight, enemyPositionsY)
+      enemyRequestCounter = 0;
+    }
+
+  })
 
   socket.on("disconnect", () => {
     console.log("disconnect");
