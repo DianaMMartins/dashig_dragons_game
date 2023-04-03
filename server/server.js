@@ -132,6 +132,13 @@ io.on("connection", (socket) => {
   })
 
   socket.on("disconnect", () => {
+    const idIndex = playerIds.indexOf(socket.id)
+    playerIds.splice(idIndex, 1)
+    console.log(playerIds)
+    if (playerIds.length < 2) {
+      io.emit("gameOver")
+    }
+
     console.log("disconnect");
   });
 })
