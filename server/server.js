@@ -48,10 +48,16 @@ for (let i = 0; i < 10; i++) {
 io.on("connection", (socket) => {
   console.log(socket.id, "connected");
 
-  if (playerIds.length < 2) {
-    playerIds.push(socket.id);
+  // if (playerIds.length < 2) {
+  playerIds.push(socket.id);
 
-    socket.emit("assignId", socket.id);
+  socket.emit("assignId", socket.id);
+  // }
+
+  if (playerIds.length > 2) {
+    const idIndex = playerIds.indexOf(socket.id)
+    playerIds.splice(idIndex, 1)
+    socket.emit("serverFull")
   }
 
   if (playerIds.length === 2) {
@@ -134,7 +140,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const idIndex = playerIds.indexOf(socket.id)
     playerIds.splice(idIndex, 1)
-    console.log(playerIds)
+
     if (playerIds.length < 2) {
       io.emit("gameOver")
     }

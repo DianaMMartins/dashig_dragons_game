@@ -10,6 +10,7 @@ function App() {
   const [id, setId] = useState("");
   const [allIds, setAllIds] = useState([]);
   const [isGameOver, setIsGameOver] = useState(false)
+  const [isRoomFull, setIsRoomFull] = useState(false)
 
   useEffect(() => {
     function onConnect() {
@@ -24,6 +25,10 @@ function App() {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("serverFull", () => {
+      socket.disconnect()
+      alert('Server full try again later')
+    })
     // socket.on("gameOver", () => {
     //   setIsGameOver(true)
     //   setIsLoading(true)
@@ -60,14 +65,14 @@ function App() {
         <h1>Waiting for other player ...</h1>
       ) : (
         <div>
-            <GameWindow
-              socket={socket}
-              id={id}
-              allIds={allIds}
-              setIsGameOver={setIsGameOver}
-              isGameOver={isGameOver}
-            />
-          
+          <GameWindow
+            socket={socket}
+            id={id}
+            allIds={allIds}
+            setIsGameOver={setIsGameOver}
+            isGameOver={isGameOver}
+          />
+
         </div>
       )}
     </div>

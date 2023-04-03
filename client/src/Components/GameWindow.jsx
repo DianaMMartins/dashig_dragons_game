@@ -370,7 +370,7 @@ function GameWindow({
   function decreaseGoalHealth(objective, enemy) {
     if (goalHealthBar.width > 0) {
       goal.setTint(0xff0000);
-      goalHealthBar.width -= 100;
+      goalHealthBar.width -= 10;
       setTimeout(() => {
         goal.setTint();
       }, 250);
