@@ -37,8 +37,8 @@ for (let i = 0; i < 10; i++) {
 io.on("connection", (socket) => {
   playerIds.push(socket.id);
 
-  console.log(socket.id);
-  console.log(playerIds);
+  console.log(socket.id, " has connected");
+  console.log(playerIds, " on connect");
 
   socket.emit("assignId", socket.id);
 
@@ -125,7 +125,8 @@ io.on("connection", (socket) => {
     const idIndex = playerIds.indexOf(socket.id);
     playerIds.splice(idIndex, 1);
 
-    console.log(socket.id);
+    console.log(socket.id, " has disconnected");
+    console.log(playerIds, " on disconnect");
 
     if (playerIds.length < 2) {
       io.emit("gameOver");
