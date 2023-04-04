@@ -7,7 +7,7 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 4040;
 const io = new Server(server, {
   cors: {
-    origin: "https://master--dashing-dragon-fbfd86.netlify.app/",
+    origin: "https://dashing-dragon-fbfd86.netlify.app",
   },
 });
 const mongoose = require("mongoose");
