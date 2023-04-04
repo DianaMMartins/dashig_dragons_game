@@ -118,7 +118,7 @@ function GameWindow({
       visible: false,
       key: "projectile",
     });
-    projectile1.scaleXY(-0.75);
+    projectile1.scaleXY(-0.9);
     projectile1.children.iterate(function (child) {
       child.setCollideWorldBounds(true);
       child.body.onWorldBounds = true;
@@ -143,7 +143,7 @@ function GameWindow({
       visible: false,
       key: "projectile",
     });
-    projectile2.scaleXY(-0.75);
+    projectile2.scaleXY(-0.9);
     projectile2.children.iterate(function (child) {
       child.setCollideWorldBounds(true);
       child.body.onWorldBounds = true;
@@ -212,21 +212,21 @@ function GameWindow({
     }
     if (cursors.up.isDown) {
       if (id === allIds[0]) {
-        player1.setVelocityY(-160);
+        player1.setVelocityY(-250);
         player1.setAngle(90);
         socket.emit("updatePlayerOnePosition", player1.y, "up");
       } else {
-        player2.setVelocityY(-160);
+        player2.setVelocityY(-250);
         player2.setAngle(-90);
         socket.emit("updatePlayerTwoPosition", player2.y, "up");
       }
     } else if (cursors.down.isDown) {
       if (id === allIds[0]) {
-        player1.setVelocityY(160);
+        player1.setVelocityY(250);
         player1.setAngle(-90);
         socket.emit("updatePlayerOnePosition", player1.y, "down");
       } else {
-        player2.setVelocityY(160);
+        player2.setVelocityY(250);
         player2.setAngle(90);
         socket.emit("updatePlayerTwoPosition", player2.y, "down");
       }
@@ -308,7 +308,7 @@ function GameWindow({
         bullets[i].visible = true;
         bullets[i].x = player1.x;
         bullets[i].y = player1.y;
-        bullets[i].body.velocity.set(-160, 0);
+        bullets[i].body.velocity.set(-360, 0);
         break;
       }
     }
@@ -321,7 +321,7 @@ function GameWindow({
         bullets[i].visible = true;
         bullets[i].x = player2.x;
         bullets[i].y = player2.y;
-        bullets[i].body.velocity.set(160, 0);
+        bullets[i].body.velocity.set(360, 0);
         break;
       }
     }
@@ -333,7 +333,7 @@ function GameWindow({
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
 
-      enemies[i].body.velocity.set(160, 0);
+      enemies[i].body.velocity.set(70, 0);
 
       enemies[i].enableBody(null, null, null, true, true);
     }
@@ -345,7 +345,7 @@ function GameWindow({
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
 
-      enemies[i].body.velocity.set(-160, 0);
+      enemies[i].body.velocity.set(-70, 0);
       enemies[i].enableBody(null, null, null, true, true);
     }
   });
