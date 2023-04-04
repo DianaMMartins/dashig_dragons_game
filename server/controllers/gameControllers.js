@@ -82,7 +82,6 @@ const postPlayerScore = (playerScoreObject) => {
     return convertedApiResult;
 
   }).catch((err) => {
-
     console.log(err)
   })
 }

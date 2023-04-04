@@ -14,12 +14,10 @@ function App() {
 
   useEffect(() => {
     function onConnect() {
-      console.log("connected");
       setIsConnected(true);
     }
 
     function onDisconnect() {
-      console.log("disconnect");
       setIsConnected(false);
     }
 
@@ -31,18 +29,14 @@ function App() {
     });
 
     socket.on("assignId", (clientId) => {
-      console.log(clientId);
       setId(clientId);
     });
 
     socket.on("sendAllIds", (playerIds) => {
       setIsLoading(false);
       setAllIds(playerIds);
-      console.log(id, allIds);
     });
   }, []);
-
-  console.log(isGameOver);
 
   return (
     <div className="App">

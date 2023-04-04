@@ -293,8 +293,6 @@ function GameWindow({
         window.location.reload();
       });
     });
-    // console.log
-    //update enemy to go back to group && reset stats
   }
 
   socket.on("updatePlayerTwoPosition", (location, direction) => {

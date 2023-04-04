@@ -14,7 +14,6 @@ require("dotenv").config();
 const key = process.env.API_KEY;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-
 const {
   getEnemies,
   getTowers,
@@ -43,13 +42,9 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
-  console.log(socket.id, "connected");
-
-  // if (playerIds.length < 2) {
   playerIds.push(socket.id);
 
   socket.emit("assignId", socket.id);
-  // }
 
   if (playerIds.length > 2) {
     const idIndex = playerIds.indexOf(socket.id);
@@ -137,8 +132,6 @@ io.on("connection", (socket) => {
     if (playerIds.length < 2) {
       io.emit("gameOver");
     }
-
-    console.log("disconnect");
   });
 });
 
