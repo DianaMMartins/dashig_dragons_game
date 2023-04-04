@@ -36,33 +36,34 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
-  playerIds.push(socket.id);
+  socket.on("join", () => {
+    playerIds.push(socket.id);
 
-  console.log(socket.id, " has connected");
-  console.log(playerIds, " on connect");
+    console.log(socket.id, " has connected");
+    console.log(playerIds, " on connect");
 
   socket.emit("assignId", socket.id);
 
   if (playerIds.length > 2) {
     const idIndex = playerIds.indexOf(socket.id);
     playerIds.splice(idIndex, 1);
-    console.log('hello not here!');
     socket.emit("serverFull");
   }
 
-  if (playerIds.length === 2) {
-    io.emit("sendAllIds", playerIds);
-    getPlayer().then((playerData) => {
-      const playerTemplate = {
-        location: { y: 0 },
-        health: playerData[0].health,
-        coins: playerData[0].coins,
-        weapon: playerData[0].weapon,
-      };
+    if (playerIds.length === 2) {
+      io.emit("sendAllIds", playerIds);
+      getPlayer().then((playerData) => {
+        const playerTemplate = {
+          location: { y: 0 },
+          health: playerData[0].health,
+          coins: playerData[0].coins,
+          weapon: playerData[0].weapon,
+        };
 
-      players = [{ ...playerTemplate }, { ...playerTemplate }];
-    });
-  }
+        players = [{ ...playerTemplate }, { ...playerTemplate }];
+      });
+    }
+  });
 
   socket.on("enemiesCreated", () => {
     socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
@@ -124,8 +125,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    const idIndex = playerIds.indexOf(socket.id);
-    playerIds.splice(idIndex, 1);
+    if (playerIds.indexOf(socket.id)) {
+      const idIndex = playerIds.indexOf(socket.id);
+      playerIds.splice(idIndex, 1);
+    }
 
     console.log(socket.id, " has disconnected");
     console.log(playerIds, " on disconnect");
