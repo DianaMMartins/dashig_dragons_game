@@ -35,8 +35,10 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
   playerIds.push(socket.id);
+
+  console.log(socket.id);
+  console.log(playerIds);
 
   socket.emit("assignId", socket.id);
 
@@ -123,6 +125,8 @@ io.on("connection", (socket) => {
     const idIndex = playerIds.indexOf(socket.id);
     playerIds.splice(idIndex, 1);
 
+    console.log(socket.id);
+
     if (playerIds.length < 2) {
       io.emit("gameOver");
     }
@@ -132,7 +136,7 @@ io.on("connection", (socket) => {
 const db = mongoose
   .connect(`mongodb+srv://newuser:${key}@pinder.skvgszw.mongodb.net/Game`)
   .then(() => {
-    server.listen(PORT, ()=>{
+    server.listen(PORT, () => {
       console.log(`listening on ${PORT}`);
     });
   });
