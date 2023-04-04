@@ -4,9 +4,10 @@ const http = require("http");
 const server = http.createServer(app);
 const cors = require("cors");
 const { Server } = require("socket.io");
+const PORT = process.env.PORT || 4040;
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://master--dashing-dragon-fbfd86.netlify.app/",
   },
 });
 const mongoose = require("mongoose");
@@ -14,16 +15,8 @@ require("dotenv").config();
 const key = process.env.API_KEY;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
-const {
-  getEnemies,
-  getTowers,
-  getGoal,
-  getPlayer,
-  getGameScore,
-  postPlayerScore,
-} = require("./controllers/gameControllers");
+const { getPlayer } = require("./controllers/gameControllers");
 
-let enemiesGroup = [];
 let playerIds = [];
 let players = [];
 let enemyPositionXLeft = [];
@@ -138,7 +131,7 @@ io.on("connection", (socket) => {
 const db = mongoose
   .connect(`mongodb+srv://newuser:${key}@pinder.skvgszw.mongodb.net/Game`)
   .then(() => {
-    server.listen(4040);
+    server.listen(PORT);
   });
 
 module.exports = { server, io, app };
