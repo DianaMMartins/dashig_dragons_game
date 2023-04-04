@@ -37,16 +37,17 @@ for (let i = 0; i < 10; i++) {
 io.on("connection", (socket) => {
   playerIds.push(socket.id);
 
-  console.log(socket.id, " has connected");
+  console.log(socket.id, " on connect");
   console.log(playerIds, " on connect");
-
-  socket.emit("assignId", socket.id);
 
   if (playerIds.length > 2) {
     const idIndex = playerIds.indexOf(socket.id);
     playerIds.splice(idIndex, 1);
     socket.emit("serverFull");
+    console.log(playerIds, socket.id, " socket removed");
   }
+
+  socket.emit("assignId", socket.id);
 
   if (playerIds.length === 2) {
     io.emit("sendAllIds", playerIds);
