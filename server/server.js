@@ -7,7 +7,8 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 4040;
 const io = new Server(server, {
   cors: {
-    origin: "https://dashing-dragon-fbfd86.netlify.app",
+    // origin: "https://dashing-dragon-fbfd86.netlify.app",
+     origin: "http://localhost:3000",
   },
 });
 const mongoose = require("mongoose");
@@ -40,11 +41,12 @@ io.on("connection", (socket) => {
   console.log(socket.id, " has connected");
   console.log(playerIds, " on connect");
 
-  socket.emit("assignId", socket.id);  playerIds.push(socket.id);  playerIds.push(socket.id);
+  socket.emit("assignId", socket.id);
 
   if (playerIds.length > 2) {
     const idIndex = playerIds.indexOf(socket.id);
     playerIds.splice(idIndex, 1);
+    console.log('hello not here!');
     socket.emit("serverFull");
   }
 
