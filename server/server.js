@@ -22,7 +22,6 @@ const {
   postPlayerScore,
 } = require("./controllers/gameControllers");
 
-
 let enemiesGroup = [];
 let playerIds = [];
 let players = [];
@@ -31,17 +30,13 @@ let enemyPositionsXRight = [];
 let enemyPositionsY = [];
 let enemyRequestCounter = 0;
 
-
 for (let i = 0; i < 10; i++) {
   const randomY = Math.floor(Math.random() * 5);
   enemyPositionsY.push(randomY);
-  const randomX = -(
-    Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
-  );
+  const randomX = -(Math.floor(Math.floor(Math.random() * 1080) / 100) * 180);
   enemyPositionXLeft.push(randomX);
-  const randomXRight = (
-    (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180) + 1920
-  );
+  const randomXRight =
+    Math.floor(Math.floor(Math.random() * 1080) / 100) * 180 + 1920;
   enemyPositionsXRight.push(randomXRight);
 }
 
@@ -55,9 +50,9 @@ io.on("connection", (socket) => {
   // }
 
   if (playerIds.length > 2) {
-    const idIndex = playerIds.indexOf(socket.id)
-    playerIds.splice(idIndex, 1)
-    socket.emit("serverFull")
+    const idIndex = playerIds.indexOf(socket.id);
+    playerIds.splice(idIndex, 1);
+    socket.emit("serverFull");
   }
 
   if (playerIds.length === 2) {
@@ -74,12 +69,10 @@ io.on("connection", (socket) => {
     });
   }
 
-
-  socket.on('enemiesCreated', () => {
-    socket.emit('enemyPositionLeft', enemyPositionXLeft, enemyPositionsY)
-    socket.emit('enemyPositionRight', enemyPositionsXRight, enemyPositionsY)
-
-  })
+  socket.on("enemiesCreated", () => {
+    socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
+    socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
+  });
 
   socket.on("updatePlayerOnePosition", (data, direction) => {
     if (players.length === 2) {
@@ -112,11 +105,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("generateNewEnemies", () => {
-    enemyRequestCounter++
+    enemyRequestCounter++;
     if (enemyRequestCounter === 2) {
-      enemyPositionsY = []
-      enemyPositionXLeft = []
-      enemyPositionsXRight = []
+      enemyPositionsY = [];
+      enemyPositionXLeft = [];
+      enemyPositionsXRight = [];
       for (let i = 0; i < 10; i++) {
         const randomY = Math.floor(Math.random() * 5);
         enemyPositionsY.push(randomY);
@@ -125,29 +118,27 @@ io.on("connection", (socket) => {
           Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
         );
         enemyPositionXLeft.push(randomX);
-        const randomXRight = (
-          (Math.floor(Math.floor(Math.random() * 1080) / 100) * 180) + 1920
-        );
+        const randomXRight =
+          Math.floor(Math.floor(Math.random() * 1080) / 100) * 180 + 1920;
         enemyPositionsXRight.push(randomXRight);
       }
-      io.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY)
-      io.emit('enemyPositionRight', enemyPositionsXRight, enemyPositionsY)
+      io.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
+      io.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
       enemyRequestCounter = 0;
     }
-
-  })
+  });
 
   socket.on("disconnect", () => {
-    const idIndex = playerIds.indexOf(socket.id)
-    playerIds.splice(idIndex, 1)
+    const idIndex = playerIds.indexOf(socket.id);
+    playerIds.splice(idIndex, 1);
 
     if (playerIds.length < 2) {
-      io.emit("gameOver")
+      io.emit("gameOver");
     }
 
     console.log("disconnect");
   });
-})
+});
 
 const db = mongoose
   .connect(
