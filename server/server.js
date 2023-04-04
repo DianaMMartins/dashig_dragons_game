@@ -24,7 +24,6 @@ let enemyPositionXLeft = [];
 let enemyPositionsXRight = [];
 let enemyPositionsY = [];
 let enemyRequestCounter = 0;
-let gameInProgress = false;
 
 for (let i = 0; i < 10; i++) {
   const randomY = Math.floor(Math.random() * 5);
@@ -38,13 +37,7 @@ for (let i = 0; i < 10; i++) {
 
 io.on("connection", (socket) => {
   socket.on("join", () => {
-    if (gameInProgress) {
-      socket.emit("serverFull");
-    }
-
-    if (!playerIds.length || playerIds.length === 1) {
-      playerIds.push(socket.id);
-    }
+    playerIds.push(socket.id);
 
     console.log(socket.id, " has connected");
     console.log(playerIds, " on connect");
@@ -52,7 +45,6 @@ io.on("connection", (socket) => {
     socket.emit("assignId", socket.id);
 
     if (playerIds.length === 2) {
-      gameInProgress = true;
       io.emit("sendAllIds", playerIds);
       getPlayer().then((playerData) => {
         const playerTemplate = {
