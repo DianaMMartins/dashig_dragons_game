@@ -37,7 +37,6 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
-
   socket.on("join", () => {
     if (gameInProgress) {
       socket.emit("serverFull");
@@ -66,81 +65,80 @@ io.on("connection", (socket) => {
         players = [{ ...playerTemplate }, { ...playerTemplate }];
       });
     }
-
-    socket.on("enemiesCreated", () => {
-      socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
-      socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
-    });
-
-    socket.on("updatePlayerOnePosition", (data, direction) => {
-      if (players.length === 2) {
-        players[0].location.y = data;
-        socket.broadcast.emit(
-          "updatePlayerOnePosition",
-          players[0].location,
-          direction
-        );
-      }
-    });
-
-    socket.on("updatePlayerTwoPosition", (data, direction) => {
-      if (players.length === 2) {
-        players[1].location.y = data;
-        socket.broadcast.emit(
-          "updatePlayerTwoPosition",
-          players[1].location,
-          direction
-        );
-      }
-    });
-
-    socket.on("player1shot", () => {
-      io.emit("player1shot");
-    });
-
-    socket.on("player2shot", () => {
-      io.emit("player2shot");
-    });
-
-    socket.on("generateNewEnemies", () => {
-      enemyRequestCounter++;
-      if (enemyRequestCounter === 2) {
-        enemyPositionsY = [];
-        enemyPositionXLeft = [];
-        enemyPositionsXRight = [];
-        for (let i = 0; i < 10; i++) {
-          const randomY = Math.floor(Math.random() * 5);
-          enemyPositionsY.push(randomY);
-
-          const randomX = -(
-            Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
-          );
-          enemyPositionXLeft.push(randomX);
-          const randomXRight =
-            Math.floor(Math.floor(Math.random() * 1080) / 100) * 180 + 1920;
-          enemyPositionsXRight.push(randomXRight);
-        }
-        io.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
-        io.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
-        enemyRequestCounter = 0;
-      }
-    });
-
-    socket.on("disconnect", () => {
-      if (playerIds.indexOf(socket.id)) {
-        const idIndex = playerIds.indexOf(socket.id);
-        playerIds.splice(idIndex, 1);
-      }
-
-      console.log(socket.id, " has disconnected");
-      console.log(playerIds, " on disconnect");
-
-      if (playerIds.length < 2) {
-        io.emit("gameOver");
-      }
-    });
   });
-  
+
+  socket.on("enemiesCreated", () => {
+    socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
+    socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
+  });
+
+  socket.on("updatePlayerOnePosition", (data, direction) => {
+    if (players.length === 2) {
+      players[0].location.y = data;
+      socket.broadcast.emit(
+        "updatePlayerOnePosition",
+        players[0].location,
+        direction
+      );
+    }
+  });
+
+  socket.on("updatePlayerTwoPosition", (data, direction) => {
+    if (players.length === 2) {
+      players[1].location.y = data;
+      socket.broadcast.emit(
+        "updatePlayerTwoPosition",
+        players[1].location,
+        direction
+      );
+    }
+  });
+
+  socket.on("player1shot", () => {
+    io.emit("player1shot");
+  });
+
+  socket.on("player2shot", () => {
+    io.emit("player2shot");
+  });
+
+  socket.on("generateNewEnemies", () => {
+    enemyRequestCounter++;
+    if (enemyRequestCounter === 2) {
+      enemyPositionsY = [];
+      enemyPositionXLeft = [];
+      enemyPositionsXRight = [];
+      for (let i = 0; i < 10; i++) {
+        const randomY = Math.floor(Math.random() * 5);
+        enemyPositionsY.push(randomY);
+
+        const randomX = -(
+          Math.floor(Math.floor(Math.random() * 1080) / 100) * 180
+        );
+        enemyPositionXLeft.push(randomX);
+        const randomXRight =
+          Math.floor(Math.floor(Math.random() * 1080) / 100) * 180 + 1920;
+        enemyPositionsXRight.push(randomXRight);
+      }
+      io.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
+      io.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
+      enemyRequestCounter = 0;
+    }
+  });
+
+  socket.on("disconnect", () => {
+    if (playerIds.indexOf(socket.id)) {
+      const idIndex = playerIds.indexOf(socket.id);
+      playerIds.splice(idIndex, 1);
+    }
+
+    console.log(socket.id, " has disconnected");
+    console.log(playerIds, " on disconnect");
+
+    if (playerIds.length < 2) {
+      io.emit("gameOver");
+    }
+  });
 });
 
 const db = mongoose
