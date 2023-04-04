@@ -25,6 +25,10 @@ function App() {
     });
   }, []);
 
+  function handleClick() {
+    socket.emit("join");
+  }
+
   return (
     <div className="App">
       <img
@@ -34,7 +38,10 @@ function App() {
         width="50px"
       />
       {isLoading ? (
-        <h1>Waiting for other player ...</h1>
+        <>
+          <h1>Waiting for other player ...</h1>
+          <button onClick={handleClick}>JOIN</button>
+        </>
       ) : (
         <div>
           <GameWindow
