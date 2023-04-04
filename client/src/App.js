@@ -9,7 +9,6 @@ function App() {
   const [allIds, setAllIds] = useState([]);
   const [isGameOver, setIsGameOver] = useState(false);
 
-  useEffect(() => {
     socket.on("serverFull", () => {
       socket.disconnect();
       alert("Server full try again later");
@@ -23,11 +22,6 @@ function App() {
       setIsLoading(false);
       setAllIds(playerIds);
     });
-  }, []);
-
-  function handleClick() {
-    socket.emit("join");
-  }
 
   return (
     <div className="App">
@@ -40,7 +34,6 @@ function App() {
       {isLoading ? (
         <>
           <h1>Waiting for other player ...</h1>
-          <button onClick={handleClick}>JOIN</button>
         </>
       ) : (
         <div>

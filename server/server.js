@@ -36,29 +36,32 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("join", () => {
-    playerIds.push(socket.id);
+  playerIds.push(socket.id);
 
-    console.log(socket.id, " has connected");
-    console.log(playerIds, " on connect");
+  console.log(socket.id, " has connected");
+  console.log(playerIds, " on connect");
 
-    socket.emit("assignId", socket.id);
+  socket.emit("assignId", socket.id);
 
-    if (playerIds.length === 2) {
-      io.emit("sendAllIds", playerIds);
-      getPlayer().then((playerData) => {
-        const playerTemplate = {
-          location: { y: 0 },
-          health: playerData[0].health,
-          coins: playerData[0].coins,
-          weapon: playerData[0].weapon,
-        };
+  if (playerIds.length > 2) {
+    const idIndex = playerIds.indexOf(socket.id);
+    playerIds.splice(idIndex, 1);
+    socket.emit("serverFull");
+  }
 
-        players = [{ ...playerTemplate }, { ...playerTemplate }];
-      });
-    }
-  });
+  if (playerIds.length === 2) {
+    io.emit("sendAllIds", playerIds);
+    getPlayer().then((playerData) => {
+      const playerTemplate = {
+        location: { y: 0 },
+        health: playerData[0].health,
+        coins: playerData[0].coins,
+        weapon: playerData[0].weapon,
+      };
 
+      players = [{ ...playerTemplate }, { ...playerTemplate }];
+    });
+  }
   socket.on("enemiesCreated", () => {
     socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
     socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);

@@ -43,7 +43,7 @@ function GameWindow({
   let enemiesCounterLeft = 10;
   let enemiesCounterRight = 10;
   let gameOver = false;
-  
+
 // eslint-disable-next-line
   const game = new Phaser.Game(config);
 
@@ -77,18 +77,6 @@ function GameWindow({
 
     const color1 = new Phaser.Display.Color(150, 0, 0);
     goalHealthBar = this.add.rectangle(920, 50, 300, 50, color1.color);
-
-    // goal.setInteractive().on("pointerover", () => {
-    //   decreaseGoalHealth();
-    // });
-
-    // enemy1.setInteractive().on("pointerover", () => {
-    //   decreaseEnemyHealth(tempAtackDmg, tempEnemy1Health, enemy1);
-    // });
-
-    //on hit decreaseGoalHealth
-    //make enemy go back to start
-    //reset stats
 
     enemiesLeft = this.physics.add.group({
       setXY: { x: -100, y: -100 },
