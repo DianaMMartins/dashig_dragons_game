@@ -10,6 +10,8 @@ const io = new Server(server, {
   },
 });
 const mongoose = require("mongoose");
+require("dotenv").config();
+const key = process.env.API_KEY;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
@@ -141,9 +143,7 @@ io.on("connection", (socket) => {
 });
 
 const db = mongoose
-  .connect(
-    "mongodb+srv://newuser:zaKUwAsSSChyUO3U@pinder.skvgszw.mongodb.net/Game"
-  )
+  .connect(`mongodb+srv://newuser:${key}@pinder.skvgszw.mongodb.net/Game`)
   .then(() => {
     server.listen(4040);
   });

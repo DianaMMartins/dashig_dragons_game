@@ -199,7 +199,7 @@ function GameWindow({
     this.gameOverRectangle.visible = false;
 
     this.gameOverText = this.add.text(920, 540, "Game over", {
-      fontSize: "90px",
+      fontSize: "120px",
       fill: "#000",
     });
     this.gameOverText.setOrigin(0.5);
@@ -207,12 +207,19 @@ function GameWindow({
 
     this.newGameText = this.add.text(
       920,
-      600,
+      1000,
       "click anywhere to start a new game",
       { fontSize: "50px", fill: "#000" }
     );
     this.newGameText.setOrigin(0.5);
     this.newGameText.visible = false;
+
+    this.disconnectText = this.add.text(920, 640, "Player 2 disconnected", {
+      fontSize: "70px",
+      fill: "#000",
+    });
+    this.disconnectText.setOrigin(0.5);
+    this.disconnectText.visible = false;
   }
 
   function update() {
@@ -273,6 +280,19 @@ function GameWindow({
       enemiesCounterLeft = 10;
       enemiesCounterRight = 10;
     }
+
+    socket.on("gameOver", () => {
+      this.physics.pause();
+      gameOver = true;
+      this.gameOverRectangle.visible = true;
+      this.gameOverText.visible = true;
+      this.newGameText.visible = true;
+      this.disconnectText.visible = true;
+      socket.disconnect();
+      this.input.on("pointerdown", () => {
+        window.location.reload();
+      });
+    });
     // console.log
     //update enemy to go back to group && reset stats
   }
@@ -346,10 +366,6 @@ function GameWindow({
       enemies[i].body.velocity.set(-160, 0);
       enemies[i].enableBody(null, null, null, true, true);
     }
-  });
-
-  socket.on("gameOver", () => {
-    setIsGameOver(true);
   });
 
   function decreaseEnemyHealth(enemy, bullet) {

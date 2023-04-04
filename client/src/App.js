@@ -9,8 +9,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState("");
   const [allIds, setAllIds] = useState([]);
-  const [isGameOver, setIsGameOver] = useState(false)
-  const [isRoomFull, setIsRoomFull] = useState(false)
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isRoomFull, setIsRoomFull] = useState(false);
 
   useEffect(() => {
     function onConnect() {
@@ -26,24 +26,10 @@ function App() {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("serverFull", () => {
-      socket.disconnect()
-      alert('Server full try again later')
-    })
-    // socket.on("gameOver", () => {
-    //   setIsGameOver(true)
-    //   setIsLoading(true)
-    // })
+      socket.disconnect();
+      alert("Server full try again later");
+    });
 
-    // socket.on("getEnemiesGroup", (enemiesGroupData) => {
-    //   console.log(enemiesGroupData);
-
-    //   setEnemiesData(enemiesGroupData);
-    // });
-
-    // return () => {
-    // socket.off("connect", onConnect);
-    // socket.off("disconnect", onDisconnect);
-    // };
     socket.on("assignId", (clientId) => {
       console.log(clientId);
       setId(clientId);
@@ -56,11 +42,16 @@ function App() {
     });
   }, []);
 
-  console.log(isGameOver)
+  console.log(isGameOver);
 
   return (
     <div className="App">
-      <h1>Hi</h1>{" "}
+      <img
+        src={require("./assets/wizard1.png")}
+        alt="mighty wizard"
+        className="wizard"
+        width="50px"
+      />
       {isLoading ? (
         <h1>Waiting for other player ...</h1>
       ) : (
@@ -72,7 +63,6 @@ function App() {
             setIsGameOver={setIsGameOver}
             isGameOver={isGameOver}
           />
-
         </div>
       )}
     </div>
