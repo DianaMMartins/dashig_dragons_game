@@ -35,6 +35,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
+  console.log(socket.id);
   playerIds.push(socket.id);
 
   socket.emit("assignId", socket.id);
@@ -131,7 +132,9 @@ io.on("connection", (socket) => {
 const db = mongoose
   .connect(`mongodb+srv://newuser:${key}@pinder.skvgszw.mongodb.net/Game`)
   .then(() => {
-    server.listen(PORT);
+    server.listen(PORT, ()=>{
+      console.log(`listening on ${PORT}`);
+    });
   });
 
 module.exports = { server, io, app };
