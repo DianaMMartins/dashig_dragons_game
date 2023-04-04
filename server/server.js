@@ -7,7 +7,8 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 4040;
 const io = new Server(server, {
   cors: {
-    origin: "https://dashing-dragon-fbfd86.netlify.app",
+    // origin: "https://dashing-dragon-fbfd86.netlify.app",
+    origin: "http://localhost:3000",
   },
 });
 const mongoose = require("mongoose");
@@ -23,6 +24,7 @@ let enemyPositionXLeft = [];
 let enemyPositionsXRight = [];
 let enemyPositionsY = [];
 let enemyRequestCounter = 0;
+let gameInProgress = false;
 
 for (let i = 0; i < 10; i++) {
   const randomY = Math.floor(Math.random() * 5);
@@ -35,6 +37,10 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
+  if (gameInProgress) {
+    socket.emit("serverFull");
+  }
+
   playerIds.push(socket.id);
 
   console.log(socket.id, " has connected");
@@ -42,13 +48,8 @@ io.on("connection", (socket) => {
 
   socket.emit("assignId", socket.id);
 
-  if (playerIds.length > 2) {
-    const idIndex = playerIds.indexOf(socket.id);
-    playerIds.splice(idIndex, 1);
-    socket.emit("serverFull");
-  }
-
   if (playerIds.length === 2) {
+    gameInProgress = true;
     io.emit("sendAllIds", playerIds);
     getPlayer().then((playerData) => {
       const playerTemplate = {
@@ -122,8 +123,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    const idIndex = playerIds.indexOf(socket.id);
-    playerIds.splice(idIndex, 1);
+    if (playerIds.indexOf(socket.id)) {
+      const idIndex = playerIds.indexOf(socket.id);
+      playerIds.splice(idIndex, 1);
+    }
 
     console.log(socket.id, " has disconnected");
     console.log(playerIds, " on disconnect");
