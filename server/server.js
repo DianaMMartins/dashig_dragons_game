@@ -7,8 +7,8 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 4040;
 const io = new Server(server, {
   cors: {
-    // origin: "https://dashing-dragon-fbfd86.netlify.app",
-     origin: "http://localhost:3000",
+    origin: "https://dashing-dragon-fbfd86.netlify.app",
+    // origin: "http://localhost:3000",
   },
 });
 const mongoose = require("mongoose");
@@ -36,11 +36,10 @@ for (let i = 0; i < 10; i++) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("join", () => {
-    playerIds.push(socket.id);
+  playerIds.push(socket.id);
 
-    console.log(socket.id, " has connected");
-    console.log(playerIds, " on connect");
+  console.log(socket.id, " has connected");
+  console.log(playerIds, " on connect");
 
   socket.emit("assignId", socket.id);
 
@@ -50,21 +49,19 @@ io.on("connection", (socket) => {
     socket.emit("serverFull");
   }
 
-    if (playerIds.length === 2) {
-      io.emit("sendAllIds", playerIds);
-      getPlayer().then((playerData) => {
-        const playerTemplate = {
-          location: { y: 0 },
-          health: playerData[0].health,
-          coins: playerData[0].coins,
-          weapon: playerData[0].weapon,
-        };
+  if (playerIds.length === 2) {
+    io.emit("sendAllIds", playerIds);
+    getPlayer().then((playerData) => {
+      const playerTemplate = {
+        location: { y: 0 },
+        health: playerData[0].health,
+        coins: playerData[0].coins,
+        weapon: playerData[0].weapon,
+      };
 
-        players = [{ ...playerTemplate }, { ...playerTemplate }];
-      });
-    }
-  });
-
+      players = [{ ...playerTemplate }, { ...playerTemplate }];
+    });
+  }
   socket.on("enemiesCreated", () => {
     socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
     socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
