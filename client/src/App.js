@@ -1,42 +1,27 @@
 import "./App.css";
 import { socket } from "./socket";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GameWindow from "./Components/GameWindow.jsx";
 
 function App() {
-  // const [enemiesData, setEnemiesData] = useState([]);
-  const [isConnected, setIsConnected] = useState(socket.connected);
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState("");
   const [allIds, setAllIds] = useState([]);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [isRoomFull, setIsRoomFull] = useState(false);
 
-  useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
+  socket.on("serverFull", () => {
+    socket.disconnect();
+    alert("Server full try again later");
+  });
 
-    function onDisconnect() {
-      setIsConnected(false);
-    }
+  socket.on("assignId", (clientId) => {
+    setId(clientId);
+  });
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("serverFull", () => {
-      socket.disconnect();
-      alert("Server full try again later");
-    });
-
-    socket.on("assignId", (clientId) => {
-      setId(clientId);
-    });
-
-    socket.on("sendAllIds", (playerIds) => {
-      setIsLoading(false);
-      setAllIds(playerIds);
-    });
-  }, []);
+  socket.on("sendAllIds", (playerIds) => {
+    setIsLoading(false);
+    setAllIds(playerIds);
+  });
 
   return (
     <div className="App">

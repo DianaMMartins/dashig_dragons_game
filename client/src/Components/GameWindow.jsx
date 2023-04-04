@@ -7,11 +7,8 @@ import projectile from "../assets/wizard1.png";
 
 function GameWindow({
   socket,
-  enemiesData,
   id,
   allIds,
-  setIsGameOver,
-  isGameOver,
 }) {
   const config = {
     type: Phaser.Auto,
@@ -40,15 +37,14 @@ function GameWindow({
   let projectile2;
   let player1Shooting = false;
   let player2Shooting = false;
-  let enemy;
   let enemiesLeft;
   let enemiesRight;
-  // let enemyLevel1 = enemiesData[0];
   const lanesY = [160, 344, 540, 736, 920];
   let enemiesCounterLeft = 10;
   let enemiesCounterRight = 10;
   let gameOver = false;
-
+  
+// eslint-disable-next-line
   const game = new Phaser.Game(config);
 
   function preload() {
