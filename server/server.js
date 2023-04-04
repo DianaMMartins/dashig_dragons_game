@@ -41,7 +41,9 @@ io.on("connection", (socket) => {
     socket.emit("serverFull");
   }
 
-  playerIds.push(socket.id);
+  if (!playerIds.length || playerIds.length === 1) {
+    playerIds.push(socket.id);
+  }
 
   console.log(socket.id, " has connected");
   console.log(playerIds, " on connect");
