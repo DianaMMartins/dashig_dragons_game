@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
   console.log(socket.id, " has connected");
   console.log(playerIds, " on connect");
 
-  socket.emit("assignId", socket.id);
+  socket.emit("assignId", socket.id);  playerIds.push(socket.id);  playerIds.push(socket.id);
 
   if (playerIds.length > 2) {
     const idIndex = playerIds.indexOf(socket.id);
