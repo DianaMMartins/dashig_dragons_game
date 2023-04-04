@@ -5,11 +5,7 @@ import imageEnemy from "../assets/wizard.png";
 import characterImage from "../assets/player side.png";
 import projectile from "../assets/wizard1.png";
 
-function GameWindow({
-  socket,
-  id,
-  allIds,
-}) {
+function GameWindow({ socket, id, allIds }) {
   const config = {
     type: Phaser.Auto,
     parent: "phaserContainer",
@@ -42,9 +38,11 @@ function GameWindow({
   const lanesY = [160, 344, 540, 736, 920];
   let enemiesCounterLeft = 10;
   let enemiesCounterRight = 10;
+  let roundsIncrementBy = 50;
+  let roundsCounter = 0;
   let gameOver = false;
 
-// eslint-disable-next-line
+  // eslint-disable-next-line
   const game = new Phaser.Game(config);
 
   function preload() {
@@ -53,11 +51,6 @@ function GameWindow({
     this.load.image("character", characterImage);
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
-
-    //coins counter
-    //towers
-    //scoreboard
-    //timer
   }
 
   function create() {
@@ -189,6 +182,15 @@ function GameWindow({
     this.gameOverText.setOrigin(0.5);
     this.gameOverText.visible = false;
 
+    this.roundsText = this.add.text(50, 50, `Round ${roundsCounter + 1}`, {
+      fontSize: "64px",
+      fill: "#000",
+      stroke: "#fff",
+      thickness: 2,
+    });
+    this.roundsText.setShadow(0, 0, "#ffffff", 10, true, true);
+    this.roundsText.setStroke("white", 3);
+
     this.newGameText = this.add.text(
       920,
       1000,
@@ -263,6 +265,8 @@ function GameWindow({
       socket.emit("enemiesCreated");
       enemiesCounterLeft = 10;
       enemiesCounterRight = 10;
+      roundsCounter++;
+      this.roundsText.setText(`Round ${roundsCounter + 1}`);
     }
 
     socket.on("gameOver", () => {
@@ -333,7 +337,7 @@ function GameWindow({
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
 
-      enemies[i].body.velocity.set(70, 0);
+      enemies[i].body.velocity.set(70 + roundsIncrementBy * roundsCounter, 0);
 
       enemies[i].enableBody(null, null, null, true, true);
     }
@@ -345,7 +349,7 @@ function GameWindow({
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
 
-      enemies[i].body.velocity.set(-70, 0);
+      enemies[i].body.velocity.set(-70 - roundsIncrementBy * roundsCounter, 0);
       enemies[i].enableBody(null, null, null, true, true);
     }
   });
@@ -391,8 +395,6 @@ function GameWindow({
     }
 
     enemy.disableBody(true, true);
-    // enemy.body.stop();
-    // send back to group
   }
 
   return <div id="phaserContainer"></div>;
