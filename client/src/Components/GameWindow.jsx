@@ -5,7 +5,14 @@ import imageEnemy from "../assets/wizard.png";
 import characterImage from "../assets/player side.png";
 import projectile from "../assets/wizard1.png";
 
-function GameWindow({ socket, enemiesData, id, allIds }) {
+function GameWindow({
+  socket,
+  enemiesData,
+  id,
+  allIds,
+  setIsGameOver,
+  isGameOver,
+}) {
   const config = {
     type: Phaser.Auto,
     parent: "phaserContainer",
@@ -40,6 +47,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
   const lanesY = [160, 344, 540, 736, 920];
   let enemiesCounterLeft = 10;
   let enemiesCounterRight = 10;
+  let gameOver = false;
 
   const game = new Phaser.Game(config);
 
@@ -49,6 +57,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     this.load.image("character", characterImage);
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
+
     //coins counter
     //towers
     //scoreboard
@@ -184,9 +193,32 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       null,
       this
     );
+
+    this.gameOverRectangle = this.add.rectangle(960, 540, 1920, 1080, 0xffffff);
+    this.gameOverRectangle.setOrigin(0.5);
+    this.gameOverRectangle.visible = false;
+
+    this.gameOverText = this.add.text(920, 540, "Game over", {
+      fontSize: "90px",
+      fill: "#000",
+    });
+    this.gameOverText.setOrigin(0.5);
+    this.gameOverText.visible = false;
+
+    this.newGameText = this.add.text(
+      920,
+      600,
+      "click anywhere to start a new game",
+      { fontSize: "50px", fill: "#000" }
+    );
+    this.newGameText.setOrigin(0.5);
+    this.newGameText.visible = false;
   }
 
   function update() {
+    if (gameOver) {
+      return;
+    }
     if (cursors.up.isDown) {
       if (id === allIds[0]) {
         player1.setVelocityY(-160);
@@ -241,6 +273,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
       enemiesCounterLeft = 10;
       enemiesCounterRight = 10;
     }
+    // console.log
     //update enemy to go back to group && reset stats
   }
 
@@ -297,12 +330,11 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     for (let i = 0; i < 10; i++) {
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
-      console.log(enemies[i].x, xArray[i]);
+
       enemies[i].body.velocity.set(160, 0);
 
       enemies[i].enableBody(null, null, null, true, true);
     }
-    console.log(enemiesLeft);
   });
 
   socket.on("enemyPositionRight", (xArray, yArray) => {
@@ -310,11 +342,14 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     for (let i = 0; i < 10; i++) {
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
-      console.log(enemies[i].x, xArray[i]);
+
       enemies[i].body.velocity.set(-160, 0);
       enemies[i].enableBody(null, null, null, true, true);
     }
-    console.log(enemiesRight);
+  });
+
+  socket.on("gameOver", () => {
+    setIsGameOver(true);
   });
 
   function decreaseEnemyHealth(enemy, bullet) {
@@ -330,28 +365,25 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     } else {
       enemiesCounterRight--;
     }
-    console.log(enemiesCounterLeft, enemiesCounterRight);
-
-    // const updatedEnemyHealth = enemyHealth - damageTaken;
-    // enemy1.setTint(0xff0000);
-    // setTimeout(() => {
-    //   enemy1.setTint();
-    // }, 250);
-    // if (updatedEnemyHealth <= 0) {
-    //   console.log(enemy1);
-    //   // enemy1.body.stop();
-    //   console.log("you are dead!");
-    // }
-    // tempEnemy1Health = updatedEnemyHealth;
   }
 
   function decreaseGoalHealth(objective, enemy) {
     if (goalHealthBar.width > 0) {
       goal.setTint(0xff0000);
-      goalHealthBar.width -= 100;
+      goalHealthBar.width -= 10;
       setTimeout(() => {
         goal.setTint();
       }, 250);
+    } else {
+      this.physics.pause();
+      gameOver = true;
+      this.gameOverRectangle.visible = true;
+      this.gameOverText.visible = true;
+      this.newGameText.visible = true;
+      socket.disconnect();
+      this.input.on("pointerdown", () => {
+        window.location.reload();
+      });
     }
 
     if (enemy.side === "left") {
@@ -359,7 +391,7 @@ function GameWindow({ socket, enemiesData, id, allIds }) {
     } else {
       enemiesCounterRight--;
     }
-    console.log(enemiesCounterLeft, enemiesCounterRight);
+
     enemy.disableBody(true, true);
     // enemy.body.stop();
     // send back to group
