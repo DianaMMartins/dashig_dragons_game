@@ -1,6 +1,6 @@
 import "./App.css";
 import { socket } from "./socket";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GameWindow from "./Components/GameWindow.jsx";
 
 function App() {
