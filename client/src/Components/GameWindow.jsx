@@ -333,23 +333,21 @@ function GameWindow({ socket, id, allIds }) {
   socket.on("enemyPositionLeft", (xArray, yArray) => {
     const enemies = enemiesLeft.children.entries;
     for (let i = 0; i < 10; i++) {
+      enemies[i].enableBody(true, 0, 0, true, true);
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
-
       enemies[i].body.velocity.set(70 + roundsIncrementBy * roundsCounter, 0);
-
-      enemies[i].enableBody(null, null, null, true, true);
     }
   });
 
   socket.on("enemyPositionRight", (xArray, yArray) => {
     const enemies = enemiesRight.children.entries;
     for (let i = 0; i < 10; i++) {
+      enemies[i].enableBody(true, 0, 0, true, true);
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
 
       enemies[i].body.velocity.set(-70 - roundsIncrementBy * roundsCounter, 0);
-      enemies[i].enableBody(null, null, null, true, true);
     }
   });
 

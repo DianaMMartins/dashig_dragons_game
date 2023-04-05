@@ -7,8 +7,8 @@ const { Server } = require("socket.io");
 const PORT = process.env.PORT || 4040;
 const io = new Server(server, {
   cors: {
-    // origin: "https://dashing-dragon-fbfd86.netlify.app",
-    origin: "http://localhost:3000",
+    origin: "https://dashing-dragon-fbfd86.netlify.app",
+    // origin: "http://localhost:3000",
   },
 });
 const mongoose = require("mongoose");
