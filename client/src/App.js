@@ -1,6 +1,6 @@
 import "./App.css";
 import { socket } from "./socket";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GameWindow from "./Components/GameWindow.jsx";
 
 function App() {
@@ -8,7 +8,9 @@ function App() {
   const [id, setId] = useState("");
   const [allIds, setAllIds] = useState([]);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
+  useEffect(() => {
     socket.on("serverFull", () => {
       socket.disconnect();
       alert("Server full try again later");
@@ -22,6 +24,23 @@ function App() {
       setIsLoading(false);
       setAllIds(playerIds);
     });
+
+    return () => {
+      socket.off("serverFull");
+      socket.off("assignId");
+      socket.off("sendAllIds");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isConnected === false) {
+      setIsConnected(true);
+      socket.connect();
+    }
+    return () => {
+      socket.disconnect();
+    };
+  }, [isConnected]);
 
   return (
     <div className="App">
