@@ -2,7 +2,6 @@ import "./App.css";
 import { socket } from "./socket";
 import { useEffect, useState } from "react";
 import GameWindow from "./Components/GameWindow.jsx";
-import { use } from "matter";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
