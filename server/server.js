@@ -24,6 +24,7 @@ let enemyPositionXLeft = [];
 let enemyPositionsXRight = [];
 let enemyPositionsY = [];
 let enemyRequestCounter = 0;
+let playerConnectedCounter = 0;
 
 for (let i = 0; i < 10; i++) {
   const randomY = Math.floor(Math.random() * 5);
@@ -50,7 +51,10 @@ io.on("connection", (socket) => {
   }
 
   if (playerIds.length === 2) {
-    io.emit("sendAllIds", playerIds);
+    setTimeout(() => {
+      io.emit("sendAllIds", playerIds);
+    }, 5000);
+
     getPlayer().then((playerData) => {
       const playerTemplate = {
         location: { y: 0 },
@@ -62,6 +66,7 @@ io.on("connection", (socket) => {
       players = [{ ...playerTemplate }, { ...playerTemplate }];
     });
   }
+  
   socket.on("enemiesCreated", () => {
     socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
     socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
@@ -99,6 +104,7 @@ io.on("connection", (socket) => {
 
   socket.on("generateNewEnemies", () => {
     enemyRequestCounter++;
+    console.log(enemyRequestCounter, "more enemies plz");
     if (enemyRequestCounter === 2) {
       enemyPositionsY = [];
       enemyPositionXLeft = [];
