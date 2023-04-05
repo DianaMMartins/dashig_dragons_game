@@ -131,6 +131,7 @@ io.on("connection", (socket) => {
     console.log(playerIds, " on disconnect");
 
     if (playerIds.length < 2) {
+      playerIds = [];
       io.emit("gameOver");
     }
   });

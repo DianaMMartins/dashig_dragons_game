@@ -210,6 +210,14 @@ function GameWindow({ socket, id, allIds }) {
 
   function update() {
     if (gameOver) {
+      this.physics.pause();
+      this.gameOverRectangle.visible = true;
+      this.gameOverText.visible = true;
+      this.newGameText.visible = true;
+      this.disconnectText.visible = true;
+      this.input.on("pointerdown", () => {
+        window.location.reload();
+      });
       return;
     }
     if (cursors.up.isDown) {
@@ -267,20 +275,12 @@ function GameWindow({ socket, id, allIds }) {
       roundsCounter++;
       this.roundsText.setText(`Round ${roundsCounter + 1}`);
     }
-
-    socket.on("gameOver", () => {
-      this.physics.pause();
-      gameOver = true;
-      this.gameOverRectangle.visible = true;
-      this.gameOverText.visible = true;
-      this.newGameText.visible = true;
-      this.disconnectText.visible = true;
-      socket.disconnect();
-      this.input.on("pointerdown", () => {
-        window.location.reload();
-      });
-    });
   }
+
+  socket.on("gameOver", () => {
+    gameOver = true;
+    socket.disconnect()
+  });
 
   socket.on("updatePlayerTwoPosition", (location, direction) => {
     player2.y = location.y;
