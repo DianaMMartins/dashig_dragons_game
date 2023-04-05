@@ -4,6 +4,7 @@ import cristales from "../assets/cristals.png";
 import imageEnemy from "../assets/wizard.png";
 import characterImage from "../assets/player side.png";
 import projectile from "../assets/wizard1.png";
+import baddy from "../assets/baddy.png";
 
 function GameWindow({ socket, id, allIds }) {
   const config = {
@@ -55,11 +56,13 @@ function GameWindow({ socket, id, allIds }) {
     this.load.image("character", characterImage);
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
+    this.load.image("baddy", baddy);
   }
 
   function create() {
     this.add.image(0, 0, "map").setOrigin(0, 0);
     goal = this.physics.add.staticImage(920, 540, "goal");
+    this.add.image(300, 300, "baddy");
 
     player1 = this.physics.add
       .sprite(700, 500, "character")
@@ -283,7 +286,7 @@ function GameWindow({ socket, id, allIds }) {
 
   socket.on("gameOver", () => {
     gameOver = true;
-    socket.disconnect()
+    socket.disconnect();
   });
 
   socket.on("updatePlayerTwoPosition", (location, direction) => {
