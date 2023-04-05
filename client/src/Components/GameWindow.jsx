@@ -262,7 +262,6 @@ function GameWindow({ socket, id, allIds }) {
 
     if (enemiesCounterLeft === 0 && enemiesCounterRight === 0) {
       socket.emit("generateNewEnemies");
-      socket.emit("enemiesCreated");
       enemiesCounterLeft = 10;
       enemiesCounterRight = 10;
       roundsCounter++;
