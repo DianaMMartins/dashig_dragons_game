@@ -1,10 +1,9 @@
 import Phaser from "phaser";
-import map from "../assets/map.jpg";
+import map from "../assets/newMap.png";
 import cristales from "../assets/cristals.png";
-import imageEnemy from "../assets/wizard.png";
-import characterImage from "../assets/player side.png";
-import projectile from "../assets/wizard1.png";
-import baddy from "../assets/baddy.png";
+import imageEnemy from "../assets/baddy.png";
+import characterImage from "../assets/wizard1.png";
+import projectile from "../assets/fire.png";
 
 function GameWindow({ socket, id, allIds }) {
   const config = {
@@ -15,7 +14,7 @@ function GameWindow({ socket, id, allIds }) {
     physics: {
       default: "arcade",
       arcade: {
-        debug: true,
+        debug: false,
       },
     },
     fps: {
@@ -56,19 +55,21 @@ function GameWindow({ socket, id, allIds }) {
     this.load.image("character", characterImage);
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
-    this.load.image("baddy", baddy);
   }
 
   function create() {
-    this.add.image(0, 0, "map").setOrigin(0, 0);
-    goal = this.physics.add.staticImage(920, 540, "goal");
-    this.add.image(300, 300, "baddy");
+    this.add.image(0, 0, "map").setOrigin(0, 0).setScale(2);
+    goal = this.add.rectangle(960, 540, 80, 1080);
+    this.physics.add.existing(goal);
 
-    player1 = this.physics.add
-      .sprite(700, 500, "character")
-      .setScale(0.3)
+    // this.add.image(200, 200, "dragon").setScale(0.5)
+
+    player1 = this.physics.add.sprite(800, 500, "character").setScale(0.2);
+
+    player2 = this.physics.add
+      .sprite(1120, 500, "character")
+      .setScale(0.2)
       .setFlip(true, false);
-    player2 = this.physics.add.sprite(1150, 500, "character").setScale(0.3);
 
     player1.setCollideWorldBounds(true);
     player2.setCollideWorldBounds(true);
@@ -84,7 +85,7 @@ function GameWindow({ socket, id, allIds }) {
       visible: true,
       key: "imageEnemy",
     });
-    enemiesLeft.scaleXY(-0.7);
+    enemiesLeft.scaleXY(-0.3);
 
     enemiesLeft.children.iterate(function (child) {
       child.side = "left";
@@ -96,15 +97,16 @@ function GameWindow({ socket, id, allIds }) {
       visible: true,
       key: "imageEnemy",
     });
-    enemiesRight.scaleXY(-0.7);
+    enemiesRight.scaleXY(-0.3);
 
     enemiesRight.children.iterate(function (child) {
       child.side = "right";
+      child.flipX = true;
     });
 
     socket.emit("enemiesCreated");
 
-    this.physics.add.collider(
+    this.physics.add.overlap(
       [enemiesLeft, enemiesRight],
       goal,
       decreaseGoalHealth,
@@ -375,10 +377,10 @@ function GameWindow({ socket, id, allIds }) {
 
   function decreaseGoalHealth(objective, enemy) {
     if (goalHealthBar.width > 0) {
-      goal.setTint(0xff0000);
+      goal.setFillStyle("0xff0000", 0.5);
       goalHealthBar.width -= 10;
       setTimeout(() => {
-        goal.setTint();
+        goal.setFillStyle();
       }, 250);
     } else {
       this.physics.pause();
