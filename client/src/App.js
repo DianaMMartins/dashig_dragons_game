@@ -8,7 +8,6 @@ function App() {
   const [id, setId] = useState("");
   const [allIds, setAllIds] = useState([]);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     socket.on("serverFull", () => {
@@ -33,14 +32,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (isConnected === false) {
-      setIsConnected(true);
-      socket.connect();
-    }
+    socket.connect();
+
     return () => {
       socket.disconnect();
     };
-  }, [isConnected]);
+  }, []);
 
   return (
     <div className="App">
