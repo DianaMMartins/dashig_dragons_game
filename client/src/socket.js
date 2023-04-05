@@ -4,4 +4,4 @@ import { io } from "socket.io-client";
 const URL = "https://dashing-dragon.onrender.com";
 // const URL = "http://localhost:4040";
 
-export const socket = io(URL);
+export const socket = io(URL, { autoConnect: false });
