@@ -279,7 +279,7 @@ function GameWindow({ socket, id, allIds }) {
 
   socket.on("gameOver", () => {
     gameOver = true;
-    socket.disconnect()
+    socket.disconnect();
   });
 
   socket.on("updatePlayerTwoPosition", (location, direction) => {
