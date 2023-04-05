@@ -5,11 +5,7 @@ import imageEnemy from "../assets/wizard.png";
 import characterImage from "../assets/player side.png";
 import projectile from "../assets/wizard1.png";
 
-function GameWindow({
-  socket,
-  id,
-  allIds,
-}) {
+function GameWindow({ socket, id, allIds }) {
   const config = {
     type: Phaser.Auto,
     parent: "phaserContainer",
@@ -42,9 +38,11 @@ function GameWindow({
   const lanesY = [160, 344, 540, 736, 920];
   let enemiesCounterLeft = 10;
   let enemiesCounterRight = 10;
+  let roundsIncrementBy = 50;
+  let roundsCounter = 0;
   let gameOver = false;
 
-// eslint-disable-next-line
+  // eslint-disable-next-line
   const game = new Phaser.Game(config);
 
   function preload() {
@@ -53,11 +51,6 @@ function GameWindow({
     this.load.image("character", characterImage);
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
-
-    //coins counter
-    //towers
-    //scoreboard
-    //timer
   }
 
   function create() {
@@ -118,7 +111,7 @@ function GameWindow({
       visible: false,
       key: "projectile",
     });
-    projectile1.scaleXY(-0.75);
+    projectile1.scaleXY(-0.9);
     projectile1.children.iterate(function (child) {
       child.setCollideWorldBounds(true);
       child.body.onWorldBounds = true;
@@ -143,7 +136,7 @@ function GameWindow({
       visible: false,
       key: "projectile",
     });
-    projectile2.scaleXY(-0.75);
+    projectile2.scaleXY(-0.9);
     projectile2.children.iterate(function (child) {
       child.setCollideWorldBounds(true);
       child.body.onWorldBounds = true;
@@ -189,6 +182,15 @@ function GameWindow({
     this.gameOverText.setOrigin(0.5);
     this.gameOverText.visible = false;
 
+    this.roundsText = this.add.text(50, 50, `Round ${roundsCounter + 1}`, {
+      fontSize: "64px",
+      fill: "#000",
+      stroke: "#fff",
+      thickness: 2,
+    });
+    this.roundsText.setShadow(0, 0, "#ffffff", 10, true, true);
+    this.roundsText.setStroke("white", 3);
+
     this.newGameText = this.add.text(
       920,
       1000,
@@ -212,21 +214,21 @@ function GameWindow({
     }
     if (cursors.up.isDown) {
       if (id === allIds[0]) {
-        player1.setVelocityY(-160);
+        player1.setVelocityY(-250);
         player1.setAngle(90);
         socket.emit("updatePlayerOnePosition", player1.y, "up");
       } else {
-        player2.setVelocityY(-160);
+        player2.setVelocityY(-250);
         player2.setAngle(-90);
         socket.emit("updatePlayerTwoPosition", player2.y, "up");
       }
     } else if (cursors.down.isDown) {
       if (id === allIds[0]) {
-        player1.setVelocityY(160);
+        player1.setVelocityY(250);
         player1.setAngle(-90);
         socket.emit("updatePlayerOnePosition", player1.y, "down");
       } else {
-        player2.setVelocityY(160);
+        player2.setVelocityY(250);
         player2.setAngle(90);
         socket.emit("updatePlayerTwoPosition", player2.y, "down");
       }
@@ -260,9 +262,10 @@ function GameWindow({
 
     if (enemiesCounterLeft === 0 && enemiesCounterRight === 0) {
       socket.emit("generateNewEnemies");
-      socket.emit("enemiesCreated");
       enemiesCounterLeft = 10;
       enemiesCounterRight = 10;
+      roundsCounter++;
+      this.roundsText.setText(`Round ${roundsCounter + 1}`);
     }
 
     socket.on("gameOver", () => {
@@ -308,7 +311,7 @@ function GameWindow({
         bullets[i].visible = true;
         bullets[i].x = player1.x;
         bullets[i].y = player1.y;
-        bullets[i].body.velocity.set(-160, 0);
+        bullets[i].body.velocity.set(-360, 0);
         break;
       }
     }
@@ -321,7 +324,7 @@ function GameWindow({
         bullets[i].visible = true;
         bullets[i].x = player2.x;
         bullets[i].y = player2.y;
-        bullets[i].body.velocity.set(160, 0);
+        bullets[i].body.velocity.set(360, 0);
         break;
       }
     }
@@ -330,23 +333,21 @@ function GameWindow({
   socket.on("enemyPositionLeft", (xArray, yArray) => {
     const enemies = enemiesLeft.children.entries;
     for (let i = 0; i < 10; i++) {
+      enemies[i].enableBody(true, 0, 0, true, true);
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
-
-      enemies[i].body.velocity.set(160, 0);
-
-      enemies[i].enableBody(null, null, null, true, true);
+      enemies[i].body.velocity.set(70 + roundsIncrementBy * roundsCounter, 0);
     }
   });
 
   socket.on("enemyPositionRight", (xArray, yArray) => {
     const enemies = enemiesRight.children.entries;
     for (let i = 0; i < 10; i++) {
+      enemies[i].enableBody(true, 0, 0, true, true);
       enemies[i].x = xArray[i];
       enemies[i].y = lanesY[yArray[i]];
 
-      enemies[i].body.velocity.set(-160, 0);
-      enemies[i].enableBody(null, null, null, true, true);
+      enemies[i].body.velocity.set(-70 - roundsIncrementBy * roundsCounter, 0);
     }
   });
 
@@ -391,8 +392,6 @@ function GameWindow({
     }
 
     enemy.disableBody(true, true);
-    // enemy.body.stop();
-    // send back to group
   }
 
   return <div id="phaserContainer"></div>;
