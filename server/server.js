@@ -39,7 +39,7 @@ for (let i = 0; i < 10; i++) {
 io.on("connection", (socket) => {
   playerIds.push(socket.id);
 
-  console.log(socket.id, " has connected");
+  // console.log(socket.id, " has connected");
   console.log(playerIds, " on connect");
 
   socket.emit("assignId", socket.id);
@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
       players = [{ ...playerTemplate }, { ...playerTemplate }];
     });
   }
-  
+
   socket.on("enemiesCreated", () => {
     socket.emit("enemyPositionLeft", enemyPositionXLeft, enemyPositionsY);
     socket.emit("enemyPositionRight", enemyPositionsXRight, enemyPositionsY);
@@ -104,7 +104,6 @@ io.on("connection", (socket) => {
 
   socket.on("generateNewEnemies", () => {
     enemyRequestCounter++;
-    console.log(enemyRequestCounter, "more enemies plz");
     if (enemyRequestCounter === 2) {
       enemyPositionsY = [];
       enemyPositionXLeft = [];
@@ -133,7 +132,7 @@ io.on("connection", (socket) => {
       playerIds.splice(idIndex, 1);
     }
 
-    console.log(socket.id, " has disconnected");
+    // console.log(socket.id, " has disconnected");
     console.log(playerIds, " on disconnect");
 
     if (playerIds.length < 2) {

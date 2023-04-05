@@ -294,7 +294,6 @@ function GameWindow({ socket, id, allIds }) {
   });
 
   socket.on("updatePlayerOnePosition", (location, direction) => {
-    console.log(location.y, player1.y);
     player1.y = location.y;
     if (direction === "up") {
       player1.setAngle(90);
