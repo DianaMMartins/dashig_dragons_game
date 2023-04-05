@@ -1,10 +1,9 @@
 import Phaser from "phaser";
 import map from "../assets/newMap.png";
 import cristales from "../assets/cristals.png";
-import imageEnemy from "../assets/wizard.png";
-import characterImage from "../assets/player side.png";
+import imageEnemy from "../assets/baddy.png";
+import characterImage from "../assets/wizard1.png";
 import projectile from "../assets/fire.png";
-// import dragon from "../assets/dragon.png"
 
 function GameWindow({ socket, id, allIds }) {
   const config = {
@@ -15,7 +14,7 @@ function GameWindow({ socket, id, allIds }) {
     physics: {
       default: "arcade",
       arcade: {
-        debug: true,
+        debug: false,
       },
     },
     fps: {
@@ -56,7 +55,6 @@ function GameWindow({ socket, id, allIds }) {
     this.load.image("character", characterImage);
     this.load.image("projectile", projectile);
     this.load.image("imageEnemy", imageEnemy);
-    // this.load.image("dragon", dragon);
   }
 
   function create() {
@@ -66,8 +64,12 @@ function GameWindow({ socket, id, allIds }) {
 
     // this.add.image(200, 200, "dragon").setScale(0.5)
 
-    player1 = this.physics.add.sprite(800, 500, "character").setScale(0.2).setFlip(true, false);
-    player2 = this.physics.add.sprite(1120, 500, "character").setScale(0.2);
+    player1 = this.physics.add.sprite(800, 500, "character").setScale(0.2);
+
+    player2 = this.physics.add
+      .sprite(1120, 500, "character")
+      .setScale(0.2)
+      .setFlip(true, false);
 
     player1.setCollideWorldBounds(true);
     player2.setCollideWorldBounds(true);
@@ -83,7 +85,7 @@ function GameWindow({ socket, id, allIds }) {
       visible: true,
       key: "imageEnemy",
     });
-    enemiesLeft.scaleXY(-0.7);
+    enemiesLeft.scaleXY(-0.3);
 
     enemiesLeft.children.iterate(function (child) {
       child.side = "left";
@@ -95,10 +97,11 @@ function GameWindow({ socket, id, allIds }) {
       visible: true,
       key: "imageEnemy",
     });
-    enemiesRight.scaleXY(-0.7);
+    enemiesRight.scaleXY(-0.3);
 
     enemiesRight.children.iterate(function (child) {
       child.side = "right";
+      child.flipX = true;
     });
 
     socket.emit("enemiesCreated");
@@ -285,7 +288,7 @@ function GameWindow({ socket, id, allIds }) {
 
   socket.on("gameOver", () => {
     gameOver = true;
-    socket.disconnect()
+    socket.disconnect();
   });
 
   socket.on("updatePlayerTwoPosition", (location, direction) => {
@@ -374,7 +377,7 @@ function GameWindow({ socket, id, allIds }) {
 
   function decreaseGoalHealth(objective, enemy) {
     if (goalHealthBar.width > 0) {
-      goal.setFillStyle('0xff0000', 0.5 );
+      goal.setFillStyle("0xff0000", 0.5);
       goalHealthBar.width -= 10;
       setTimeout(() => {
         goal.setFillStyle();
