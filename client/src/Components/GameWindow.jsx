@@ -17,6 +17,10 @@ function GameWindow({ socket, id, allIds }) {
         debug: true,
       },
     },
+    fps: {
+      forceSetTimeOut: true,
+      target: 24,
+    },
     scene: {
       preload: preload,
       create: create,
@@ -279,7 +283,7 @@ function GameWindow({ socket, id, allIds }) {
 
   socket.on("gameOver", () => {
     gameOver = true;
-    socket.disconnect();
+    socket.disconnect()
   });
 
   socket.on("updatePlayerTwoPosition", (location, direction) => {
