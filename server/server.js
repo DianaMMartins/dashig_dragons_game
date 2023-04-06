@@ -127,7 +127,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    if (playerIds.indexOf(socket.id)) {
+    if (playerIds.indexOf(socket.id) > -1) {
       const idIndex = playerIds.indexOf(socket.id);
       playerIds.splice(idIndex, 1);
     }
