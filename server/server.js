@@ -45,8 +45,6 @@ io.on("connection", (socket) => {
   socket.emit("assignId", socket.id);
 
   if (playerIds.length > 2) {
-    const idIndex = playerIds.indexOf(socket.id);
-    playerIds.splice(idIndex, 1);
     socket.emit("serverFull");
   }
 
@@ -127,6 +125,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    if (playerIds.length > 2) {
+      console.log(playerIds, " on disconnect before splice");
+      const idIndex = playerIds.indexOf(socket.id);
+      playerIds.splice(idIndex, 1);
+      console.log(playerIds, " on disconnect after splice");
+    }
+
     if (playerIds.indexOf(socket.id) > -1) {
       const idIndex = playerIds.indexOf(socket.id);
       playerIds.splice(idIndex, 1);
